@@ -1,19 +1,28 @@
-import { resolve } from 'path';
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'path';
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   routeRules: {
     // prerender index route by default
     '/': { prerender: true },
   },
+
+  // alias: {
+  //   "@": resolve(__dirname, "/"),
+  // },
   alias: {
-    '@': resolve(__dirname, '/'),
+    assets: "/<rootDir>/assets",
   },
+
   css: ['~/assets/main.css'],
+
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
+
+  modules: ["@nuxt/image"]
 });
