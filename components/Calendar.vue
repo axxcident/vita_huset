@@ -1,23 +1,14 @@
 <template>
-  <h1>CSS Calendar</h1>
-
   <div class="month">
+    <h1 class="text-white tracking-wide p-3 capitalize">Vita huset bokningskalender</h1>
     <ul>
         <li class="prev" @click="previousMonth">&#10094;</li>
         <li class="next" @click="nextMonth">&#10095;</li>
         <li>
           {{ monthName }}<br>
-          <span style="font-size:18px">{{ year }}</span>
+          <span style="font-size:25px">{{ year }}</span>
         </li>
     </ul>
-    <!-- <ul>
-      <li class="prev">&#10094;</li>
-      <li class="next">&#10095;</li>
-      <li>
-        August<br>
-        <span style="font-size:18px">2021</span>
-      </li>
-    </ul> -->
   </div>
 
   <ul class="weekdays">
@@ -50,7 +41,8 @@ export default {
     const month = ref(currentDate.getMonth());
 
     const monthName = computed(() => {
-      return currentDate.toLocaleString('default', { month: 'long' });
+      const date = new Date(year.value, month.value);
+      return date.toLocaleString('default', { month: 'long' });
     });
 
     function getDaysInMonth(year, month) {
@@ -100,8 +92,19 @@ export default {
 .month {
   padding: 70px 25px;
   width: 100%;
-  background: #1abc9c;
+  background: url('@/assets/White-House.jpg') no-repeat center center;
+  background-size: cover;
   text-align: center;
+  height: 50vh;
+}
+
+.month h1 {
+  font-size: 3rem;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
 
 .month ul {
@@ -111,19 +114,53 @@ export default {
 
 .month ul li {
   color: white;
-  font-size: 20px;
+  font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 3px;
+  /* -webkit-text-stroke: 1px black; */
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
 
 .month .prev {
   float: left;
-  padding-top: 10px;
+  padding: .5rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 40%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.month .prev:hover {
+  background-color: rgba(255, 255, 255, 0.6); /* Slightly more opaque */
+  transform: scale(1.1); /* Slightly larger */
+}
+
+.month .prev:active {
+  background-color: rgba(255, 255, 255, 0.8); /* Even more opaque */
+  transform: scale(0.95); /* Slightly smaller to simulate a button press */
 }
 
 .month .next {
   float: right;
-  padding-top: 10px;
+  padding: .5rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 40%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.month .next:hover {
+  background-color: rgba(255, 255, 255, 0.6); /* Slightly more opaque */
+  transform: scale(1.1); /* Slightly larger */
+}
+
+.month .next:active {
+  background-color: rgba(255, 255, 255, 0.8); /* Even more opaque */
+  transform: scale(0.95); /* Slightly smaller to simulate a button press */
 }
 
 .weekdays {
