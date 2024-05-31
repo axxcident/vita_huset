@@ -1,8 +1,10 @@
+
+<script setup>
+
+</script>
+
 <template>
-  <div>
-    <!-- <div>
-      <img src="@/assets/White-House.jpg" alt="" />
-    </div> -->
-  </div>
   <Calendar />
+  <Users />
+  <Teams />
 </template>
