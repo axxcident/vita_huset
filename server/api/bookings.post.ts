@@ -63,9 +63,9 @@ function generateDateRange(start:Date, end:Date) {
 
   // hack to fix timezone issue
   // Add one day to the start date
-  startDate.setDate(startDate.getDate() + 1);
-  // Add one day to the end date
-  endDate.setDate(endDate.getDate() + 1);
+  // startDate.setDate(startDate.getDate() + 1);
+  // // Add one day to the end date
+  // endDate.setDate(endDate.getDate() + 1);
 
   while (startDate <= endDate) {
     dates.push(startDate.toISOString().split('T')[0]);

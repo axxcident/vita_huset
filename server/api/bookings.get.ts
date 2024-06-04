@@ -9,13 +9,15 @@ export default defineEventHandler(async (events) => {
   // console.log("query is: ", query)
   // console.log("cookies is: ",cookies)
 
-  try {
-    const bookings = await sql`SELECT * FROM bookings`;
+  // "booking_id": 42,
+  // "user_id": "42bbd328-08d7-4d92-b37c-128dd7f50cbc",
+  // "booking_date": "2024-02-10T23:00:00.000Z",
+  // "visitors_allowed": true
 
-    // If the query has a 'limit' parameter, you can apply it
-    if (query.limit) {
-      return bookings.rows.slice(0, parseInt(query.limit as string));
-    }
+  try {
+    // const bookings = await sql`SELECT * FROM bookings`;
+    // const bookings = await sql`SELECT booking_date::text FROM bookings`;
+    const bookings = await sql`SELECT booking_id, user_id, booking_date::text, visitors_allowed FROM bookings`;
 
     return bookings.rows;
   }
