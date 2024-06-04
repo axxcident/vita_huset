@@ -9,19 +9,15 @@ export default defineEventHandler(async (events) => {
   // console.log("query is: ", query)
   // console.log("cookies is: ",cookies)
 
-  const date = new Date()
-  // const date = new Date().toString()
-  console.log(date)
-
   try {
-    const users = await sql`SELECT * FROM users`;
+    const bookings = await sql`SELECT * FROM bookings`;
 
     // If the query has a 'limit' parameter, you can apply it
     if (query.limit) {
-      return users.rows.slice(0, parseInt(query.limit as string));
+      return bookings.rows.slice(0, parseInt(query.limit as string));
     }
 
-    return users.rows;
+    return bookings.rows;
   }
 
   catch (error: unknown) {
