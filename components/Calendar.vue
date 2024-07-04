@@ -2,8 +2,6 @@
   <div class="month">
     <h1 class="text-white tracking-wide p-3 capitalize mt-20">vita huset bokningskalender</h1>
     <section class="relative">
-        <!-- <button class="prev" @click="previousMonth">&#10094;</button>
-        <button class="next" @click="nextMonth">&#10095;</button> -->
         <h4 class="text-[2rem]">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
@@ -24,9 +22,14 @@
   <section class="relative">
       <button id="prev"class="absolute left-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
       <button id="next" class="absolute right-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
-      <ul class="days w-full flex flex-wrap justify-center">
+      <!-- <ul class="days w-full flex flex-wrap justify-center">
           <li v-for="day in days" :key="day">{{ day }}</li>
-          <!-- <Date :year="year" :month="month" :day="day" :userId="userId" /> -->
+          <Date :year="year" :month="month" :day="day" :userId="userId" />
+      </ul> -->
+      <ul class="days w-full flex flex-wrap justify-center">
+        <li v-for="day in days" :key="day" class="list-none">
+          <Date :year="year" :month="month" :day="day" userId="user123" />
+        </li>
       </ul>
   </section>
 
@@ -39,6 +42,7 @@
 
 <script>
 import { ref, computed } from 'vue';
+// import Date from './Date.vue'; //behövs ej tror jag
 export default {
   setup () {
     const currentDate = new Date();
@@ -118,18 +122,18 @@ export default {
   padding: 0;
 } */
 
-.month ul li {
+/* .month ul li {
   color: white;
   font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 3px;
-  /* -webkit-text-stroke: 1px black; */
+  /* -webkit-text-stroke: 1px black;
   text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,
     -1px  1px 0 #000,
      1px  1px 0 #000;
-}
+} */
 
 #prev {
   border-radius: 28%;
@@ -175,13 +179,6 @@ export default {
   margin: 5px;
   font-size:2rem;
   border: 2px solid white;
-}
-
-
-.days li .active {
-  padding: 5px;
-  background: #1abc9c;
-  color: white !important
 }
 
 @media screen and (max-width:720px) {
