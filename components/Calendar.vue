@@ -9,7 +9,7 @@
     </section>
   </div>
 
-  <ul class="weekdays mt-40 mb-4 text-2xl">
+  <ul class="weekdays mt-40 mb-4 text-2xl flex justify-center">
     <li>Mo</li>
     <li>Tu</li>
     <li>We</li>
