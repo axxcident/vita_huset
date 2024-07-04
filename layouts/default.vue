@@ -6,6 +6,8 @@
 
 <style scoped>
   .defaultlayout {
-    background-color: antiquewhite;
+    background-color: rgb(55, 54, 52);
+    color: rgb(221, 228, 251);
+    height: 100vh;
   }
 </style>

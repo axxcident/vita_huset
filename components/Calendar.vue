@@ -1,17 +1,17 @@
 <template>
   <div class="month">
-    <h1 class="text-white tracking-wide p-3 capitalize">Vita huset bokningskalender</h1>
-    <ul>
-        <li class="prev" @click="previousMonth">&#10094;</li>
-        <li class="next" @click="nextMonth">&#10095;</li>
-        <li>
-          {{ monthName }}<br>
-          <span style="font-size:25px">{{ year }}</span>
-        </li>
-    </ul>
+    <h1 class="text-white tracking-wide p-3 capitalize mt-20">vita huset bokningskalender</h1>
+    <section class="relative">
+        <button class="prev" @click="previousMonth">&#10094;</button>
+        <button class="next" @click="nextMonth">&#10095;</button>
+        <h4 class="text-[2rem]">
+          {{ monthName }}
+          <span class="text-[1.2rem]">{{ year }}</span>
+        </h4>
+    </section>
   </div>
 
-  <ul class="weekdays">
+  <ul class="weekdays mt-40 mb-4 text-2xl">
     <li>Mo</li>
     <li>Tu</li>
     <li>We</li>
@@ -93,14 +93,15 @@ export default {
 .month {
   padding: 70px 25px;
   width: 100%;
-  background: url('@/assets/White-House.jpg') no-repeat center center;
+  background: url('@/assets/vita_huset_DM.jpg') no-repeat center center;
   background-size: cover;
   text-align: center;
-  height: 50vh;
+  height: 10rem;
+  margin-bottom: 8rem;
 }
 
 .month h1 {
-  font-size: 3rem;
+  font-size: 2em;
   text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,
@@ -108,10 +109,10 @@ export default {
      1px  1px 0 #000;
 }
 
-.month ul {
+/* .month ul {
   margin: 0;
   padding: 0;
-}
+} */
 
 .month ul li {
   color: white;
@@ -128,59 +129,46 @@ export default {
 
 .month .prev {
   float: left;
-  padding: .5rem;
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 40%;
+  border-radius: 28%;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 3rem;
+  width: 2.5rem;
 }
 
 .month .prev:hover {
-  background-color: rgba(255, 255, 255, 0.6); /* Slightly more opaque */
-  transform: scale(1.1); /* Slightly larger */
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
 }
 
 .month .prev:active {
-  background-color: rgba(255, 255, 255, 0.8); /* Even more opaque */
-  transform: scale(0.95); /* Slightly smaller to simulate a button press */
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(0.95);
 }
 
 .month .next {
   float: right;
-  padding: .5rem;
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 40%;
+  border-radius: 28%;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 3rem;
+  width: 2.5rem;
 }
 
 .month .next:hover {
-  background-color: rgba(255, 255, 255, 0.6); /* Slightly more opaque */
-  transform: scale(1.1); /* Slightly larger */
+  background-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
 }
 
 .month .next:active {
-  background-color: rgba(255, 255, 255, 0.8); /* Even more opaque */
-  transform: scale(0.95); /* Slightly smaller to simulate a button press */
-}
-
-.weekdays {
-  margin: 0;
-  padding: 10px 0;
-  background-color: #ddd;
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(0.95);
 }
 
 .weekdays li {
   display: inline-block;
   width: 13.6%;
-  color: #666;
   text-align: center;
-}
-
-.days {
-  padding: 10px 0;
-  background: #eee;
-  margin: 0;
 }
 
 .days li {
@@ -189,8 +177,7 @@ export default {
   width: 13.6%;
   text-align: center;
   margin-bottom: 5px;
-  font-size:12px;
-  color: #777;
+  font-size:2rem;
 }
 
 .days li .active {

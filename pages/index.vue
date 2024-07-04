@@ -5,6 +5,6 @@
 
 <template>
   <Calendar />
-  <Users />
-  <Teams />
+  <!-- <Users />
+  <Teams /> -->
 </template>
