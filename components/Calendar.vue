@@ -28,7 +28,7 @@
       </ul> -->
       <ul class="days w-full flex flex-wrap justify-center">
         <li v-for="day in days" :key="day" class="list-none">
-          <Date :year="year" :month="month" :day="day" userId="user123" />
+          <Date :year="year" :month="month" :day="day" userId="user123" :isBooked="isBooked(day)" :visitorsAllowed="getVisitorsAllowed(day)"  />
         </li>
       </ul>
   </section>
@@ -41,13 +41,16 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-// import Date from './Date.vue'; //behövs ej tror jag
+import { ref, computed, onMounted, watch } from 'vue';
+import { useFetch } from '#app';
+
 export default {
   setup () {
     const currentDate = new Date();
     const year = ref(currentDate.getFullYear());
     const month = ref(currentDate.getMonth());
+
+    const bookings = ref([]);
 
     const monthName = computed(() => {
       const date = new Date(year.value, month.value);
@@ -58,10 +61,61 @@ export default {
       return new Date(year, month + 1, 0).getDate();
     }
 
+    // function getDayOfWeek(year, month, day) {
+    //   return new Date(year, month, day).getDay();
+    // }
+
+    // async function fetchBookings() {
+    //   const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
+    //   bookings.value = data.value;
+    // }
+
+    // onMounted(() => {
+
+    //   if (bookings.value.length === 0) {
+    //     fetchBookings();
+    //   }
+    //   // fetchBookings();
+    // });
+
+
+    const bookingsMap = computed(() => {
+      const map = new Map();
+      bookings.value.forEach(booking => {
+        const day = new Date(booking.booking_date).getDate();
+        map.set(day, booking);
+      });
+      return map;
+    });
+
+    const isBooked = computed(() => (day) => bookingsMap.value.has(day));
+
+    const getVisitorsAllowed = computed(() => (day) => {
+      const booking = bookingsMap.value.get(day);
+      return booking ? booking.visitors_allowed : false;
+    });
+
+    async function fetchBookings() {
+      const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
+      bookings.value = data.value || [];
+    }
+
+    watch([year, month], fetchBookings, { immediate: true });
+
+
     const days = computed(() => {
       const daysInMonth = getDaysInMonth(year.value, month.value);
       return Array.from({ length: daysInMonth }, (_, i) => i + 1);
     });
+
+    // const isBooked = (day) => {
+    //   return bookings.value.some(booking => new Date(booking.booking_date).getDate() === day);
+    // };
+
+    // const getVisitorsAllowed = (day) => {
+    //   const booking = bookings.value.find(booking => new Date(booking.booking_date).getDate() === day);
+    //   return booking ? booking.visitors_allowed : false;
+    // };
 
     const nextMonth = () => {
       if (month.value === 11) {
@@ -70,6 +124,7 @@ export default {
       } else {
         month.value++;
       }
+      fetchBookings();
     };
 
     const previousMonth = () => {
@@ -79,6 +134,7 @@ export default {
       } else {
         month.value--;
       }
+      fetchBookings();
     };
 
 
@@ -88,7 +144,9 @@ export default {
       monthName,
       days,
       nextMonth,
-      previousMonth
+      previousMonth,
+      isBooked,
+      getVisitorsAllowed,
     }
   }
 }

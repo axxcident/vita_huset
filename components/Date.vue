@@ -1,12 +1,21 @@
 <template>
   <span
-    class="date"
-    :class="{ 'booked': isBooked, 'can-book': canBook }"
-    @click="handleBooking"
+  class="date-container"
+    :class="{ 'booked': isBooked, 'visitorsAllowed': visitorsAllowed }"
   >
-    {{ day }}
+    <span class="date">
+      {{ day }}
+    </span>
 </span>
 </template>
+
+<!-- <span
+class="date"
+:class="{ 'booked': isBooked, 'visitorsAllowed': visitorsAllowed }"
+@click="handleBooking"
+>
+{{ day }}
+</span> -->
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -17,16 +26,16 @@ const props = defineProps({
   month: Number,
   day: Number,
   userId: String,
+  isBooked: Boolean,
+  visitorsAllowed: Boolean,
 });
 
-const isBooked = ref(false);
+// const isBooked = ref(false);
 const canBook = ref(false);
 
-// onMounted(async () => {
-//   const { data } = await useFetch(`/api/bookings?year=${props.year}&month=${props.month}&day=${props.day}&userId=${props.userId}`);
-//   isBooked.value = data.some((booking) => booking.booking_date.split('T')[0] === `${props.year}-${props.month + 1}-${props.day}`);
-//   canBook.value = !isBooked.value;
-// });
+// console.log("props.year, props.month, props.day, props.userId");
+// console.log(props.year, props.month, props.day, props.userId);
+
 
 // const handleBooking = async () => {
 //   if (canBook.value) {
@@ -58,17 +67,48 @@ const canBook = ref(false);
   border: 2px solid white;
 } */
 
-.days li .active {
+/* .days li .active {
   padding: 5px;
   background: #1abc9c;
   color: white !important
+} */
+
+.date-container {
+  display: inline-block;
+  background-color: rgb(42, 42, 42);
+  min-width: 100%;
+  position: relative;
+  /* overflow: hidden; */
 }
+
+.date-container .date {
+  position: relative;
+  z-index: 2;
+}
+
+/* .date-container span {
+  position: relative;
+  z-index: 2;
+} */
 
 .booked {
-  /* Add styling for booked dates */
+  background-color: rgb(160, 42, 42);
 }
 
-.can-book {
-  /* Add styling for dates that can be booked */
+.visitorsAllowed {
+  position: relative;
 }
+
+.visitorsAllowed::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom right, transparent 75%, rgb(187, 187, 187) 50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
 </style>

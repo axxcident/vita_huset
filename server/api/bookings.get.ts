@@ -3,21 +3,33 @@ import { defineEventHandler } from 'h3';
 
 export default defineEventHandler(async (events) => {
 
-  const cookies = parseCookies(events);
+
+  // const cookies = parseCookies(events);
   const query = getQuery(events);
   // console.log("events is: ", events)
   // console.log("query is: ", query)
   // console.log("cookies is: ",cookies)
 
-  // "booking_id": 42,
-  // "user_id": "42bbd328-08d7-4d92-b37c-128dd7f50cbc",
-  // "booking_date": "2024-02-10T23:00:00.000Z",
-  // "visitors_allowed": true
+  const { month, year } = query;
+  // console.log("Query params:", query);
 
   try {
     // const bookings = await sql`SELECT * FROM bookings`;
     // const bookings = await sql`SELECT booking_date::text FROM bookings`;
-    const bookings = await sql`SELECT booking_id, user_id, booking_date::text, visitors_allowed FROM bookings`;
+    // const bookings = await sql`SELECT booking_id, user_id, booking_date::text, visitors_allowed FROM bookings`;
+
+    // Check if month and year parameters are provided
+    if (!month || !year) {
+      throw new Error('Missing month or year parameter');
+    }
+
+    // Convert month and year to integers
+    let monthInt = parseInt(month as string, 10);
+    monthInt = monthInt + 1;
+    // console.log("monthInt is: ", monthInt)
+    const yearInt = parseInt(year as string, 10);
+
+    const bookings = await sql`SELECT booking_id, user_id, booking_date::text, visitors_allowed FROM bookings WHERE EXTRACT(MONTH FROM booking_date) = ${monthInt} AND EXTRACT(YEAR FROM booking_date) = ${yearInt} ORDER BY booking_date ASC`;
 
     return bookings.rows;
   }
@@ -37,4 +49,7 @@ export default defineEventHandler(async (events) => {
       // handle other types of errors
     }
   }
+
+
+
 })
