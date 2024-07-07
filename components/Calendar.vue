@@ -20,7 +20,7 @@
   </ul>
 
   <section class="relative">
-      <button id="prev"class="absolute left-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
+      <button id="prev" class="absolute left-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
       <button id="next" class="absolute right-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
       <!-- <ul class="days w-full flex flex-wrap justify-center">
           <li v-for="day in days" :key="day">{{ day }}</li>
