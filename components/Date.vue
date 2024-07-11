@@ -4,9 +4,10 @@
     :class="{
     'booked': isBooked,
     'visitorsAllowed': visitorsAllowed,
-    'visitorsNotAllowed': !visitorsAllowed && isBooked}"
+    'visitorsNotAllowed': !visitorsAllowed && isBooked
+    }"
   >
-    <span class="date">
+    <span class="date" :class="{'currentDay': currentDay}">
       {{ day }}
     </span>
 </span>
@@ -28,9 +29,9 @@ const props = defineProps({
   year: Number,
   month: Number,
   day: Number,
-  userId: String,
   isBooked: Boolean,
   visitorsAllowed: Boolean,
+  currentDay: Boolean,
 });
 
 // console.log("for date: ", props.day, "visitors are allowed: ", props.visitorsAllowed);
@@ -64,6 +65,7 @@ const canBook = ref(false);
 <style scoped>
 
 .date-container {
+  position: relative;
   background-color: white;
   /* background-color: rgb(42, 42, 42); */
   position: relative;
@@ -75,7 +77,7 @@ const canBook = ref(false);
 }
 
 .date-container .date {
-  position: relative;
+  /* position: relative; */
   z-index: 2;
 }
 
@@ -84,6 +86,39 @@ const canBook = ref(false);
   background-color: rgb(55, 55, 55);
   border: 1px solid rgb(255, 11, 11);
   /* background-color: rgb(160, 42, 42); */
+}
+
+.currentDay {
+  /* color: rgb(79, 79, 79);
+  background-color: rgb(126, 184, 229); */
+  position: relative;
+}
+
+.currentDay::after {
+  content: "Today";
+  position: absolute;
+  color: rgb(51, 168, 194);
+  font-size: 0.5rem;
+  top: 0;
+  left: 40px;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.currentDay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -20px;
+  right: 0;
+  bottom: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: rgb(51, 168, 194);
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 100%;
 }
 
 .visitorsAllowed {

@@ -23,7 +23,15 @@
         <span class="text-center">Sö</span>
       </div>
       <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
-        <Date v-for="day in days" :key="day" :year="year" :month="month" :day="day" userId="user123" :isBooked="isBooked(day)" :visitorsAllowed="getVisitorsAllowed(day)"  />
+        <Date v-for="day in days"
+        :key="day"
+        :year="year"
+        :month="month"
+        :day="day"
+        :isBooked="isBooked(day)"
+        :visitorsAllowed="getVisitorsAllowed(day)"
+        :currentDay="isCurrentDay(day)"
+        />
       </div>
   </section>
 </template>
@@ -37,6 +45,9 @@ export default {
     const currentDate = new Date();
     const year = ref(currentDate.getFullYear());
     const month = ref(currentDate.getMonth());
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
 
     const bookings = ref([]);
 
@@ -49,9 +60,9 @@ export default {
       return new Date(year, month + 1, 0).getDate();
     }
 
-    // function getDayOfWeek(year, month, day) {
-    //   return new Date(year, month, day).getDay();
-    // }
+    const isCurrentDay = (day) => {
+      return year.value === currentYear && month.value === currentMonth && day === currentDay;
+    };
 
     // async function fetchBookings() {
     //   const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
@@ -135,6 +146,7 @@ export default {
       previousMonth,
       isBooked,
       getVisitorsAllowed,
+      isCurrentDay,
     }
   }
 }
