@@ -57,26 +57,9 @@ const canBook = ref(false);
 </script>
 
 <style scoped>
-/* .date {
-  list-style-type: none;
-  display: inline-block;
-  width: 13.6%;
-  text-align: center;
-  margin: 5px;
-  font-size:2rem;
-  border: 2px solid white;
-} */
-
-/* .days li .active {
-  padding: 5px;
-  background: #1abc9c;
-  color: white !important
-} */
 
 .date-container {
-  display: inline-block;
   background-color: rgb(42, 42, 42);
-  min-width: 100%;
   position: relative;
   /* overflow: hidden; */
 }
@@ -85,11 +68,6 @@ const canBook = ref(false);
   position: relative;
   z-index: 2;
 }
-
-/* .date-container span {
-  position: relative;
-  z-index: 2;
-} */
 
 .booked {
   background-color: rgb(160, 42, 42);

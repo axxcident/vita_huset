@@ -9,35 +9,23 @@
     </section>
   </div>
 
-  <ul class="weekdays mt-40 mb-4 text-2xl flex justify-center">
-    <li>Mo</li>
-    <li>Tu</li>
-    <li>We</li>
-    <li>Th</li>
-    <li>Fr</li>
-    <li>Sa</li>
-    <li>Su</li>
-  </ul>
-
   <section class="relative">
       <button id="prev" class="absolute left-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
       <button id="next" class="absolute right-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
-      <!-- <ul class="days w-full flex flex-wrap justify-center">
-          <li v-for="day in days" :key="day">{{ day }}</li>
-          <Date :year="year" :month="month" :day="day" :userId="userId" />
-      </ul> -->
-      <ul class="days w-full flex flex-wrap justify-center">
-        <li v-for="day in days" :key="day" class="list-none">
-          <Date :year="year" :month="month" :day="day" userId="user123" :isBooked="isBooked(day)" :visitorsAllowed="getVisitorsAllowed(day)"  />
-        </li>
-      </ul>
-  </section>
 
-  <!-- <ul class="days">
-    <li>9</li>
-    <li><span class="active">10</span></li>
-    <li>11</li>
-  </ul> -->
+      <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
+        <span class="text-center">Må</span>
+        <span class="text-center">Ti</span>
+        <span class="text-center">On</span>
+        <span class="text-center">To</span>
+        <span class="text-center">Fr</span>
+        <span class="text-center">Lö</span>
+        <span class="text-center">Sö</span>
+      </div>
+      <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
+        <Date v-for="day in days" :key="day" :year="year" :month="month" :day="day" userId="user123" :isBooked="isBooked(day)" :visitorsAllowed="getVisitorsAllowed(day)"  />
+      </div>
+  </section>
 </template>
 
 <script>
@@ -223,32 +211,22 @@ export default {
   transform: scale(0.95);
 }
 
-.weekdays li {
-  display: inline-block;
-  width: 13.6%;
+.days span {
   text-align: center;
-}
-
-.days li {
-  list-style-type: none;
-  display: inline-block;
-  width: 13.6%;
-  text-align: center;
-  margin: 5px;
   font-size:2rem;
-  border: 2px solid white;
+  border: 1px solid white;
 }
 
 @media screen and (max-width:720px) {
-  .weekdays li, .days li {width: 13.1%;}
+  .weekdays span, .days span {width: 13.1%;}
 }
 
 @media screen and (max-width: 420px) {
-  .weekdays li, .days li {width: 12.5%;}
+  .weekdays span, .days span {width: 12.5%;}
   .days li .active {padding: 2px;}
 }
 
 @media screen and (max-width: 290px) {
-  .weekdays li, .days li {width: 12.2%;}
+  .weekdays span, .days span {width: 12.2%;}
 }
 </style>
