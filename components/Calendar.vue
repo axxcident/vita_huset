@@ -1,8 +1,8 @@
 <template>
   <div class="month">
-    <h1 class="text-white tracking-wide p-3 capitalize mt-20">vita huset bokningskalender</h1>
-    <section class="relative">
-        <h4 class="text-[2rem]">
+    <h1 class="text-white tracking-wide p-3 capitalize">vita huset bokningskalender</h1>
+    <section>
+        <h4 class="text-[4rem] leading-none">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
@@ -10,8 +10,8 @@
   </div>
 
   <section class="relative">
-      <button id="prev" class="absolute left-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
-      <button id="next" class="absolute right-1 top-[7rem] cursor-pointer text-5xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
+      <button id="prev" class="absolute left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
+      <button id="next" class="absolute right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
       <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
         <span class="text-center">Må</span>
@@ -147,8 +147,8 @@ export default {
 .month {
   padding: 70px 25px;
   width: 100%;
-  background: url('@/assets/vita_huset_DM.jpg') no-repeat center center;
-  background-size: cover;
+  /* background: url('@/assets/vita_hus_WM.jpg') no-repeat center center; */
+  /* background-size: cover; */
   text-align: center;
   height: 10rem;
   margin-bottom: 8rem;
@@ -163,35 +163,19 @@ export default {
      1px  1px 0 #000;
 }
 
-/* .month ul {
-  margin: 0;
-  padding: 0;
-} */
-
-/* .month ul li {
-  color: white;
-  font-size: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  /* -webkit-text-stroke: 1px black;
-  text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
-} */
-
 #prev {
   border-radius: 28%;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #prev:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  color: rgb(255, 255, 255);
+  background-color: rgba(52, 52, 52, 0.6);
   transform: scale(1.1);
 }
 
 #prev:active {
+  color: #000;
   background-color: rgba(255, 255, 255, 0.8);
   transform: scale(0.95);
 }
@@ -202,21 +186,18 @@ export default {
 }
 
 #next:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  color: rgb(255, 255, 255);
+  background-color: rgba(52, 52, 52, 0.6);
   transform: scale(1.1);
 }
 
 #next:active {
+  color: #000;
   background-color: rgba(255, 255, 255, 0.8);
   transform: scale(0.95);
 }
 
-.days span {
-  text-align: center;
-  font-size:2rem;
-  border: 1px solid white;
-}
-
+/* Flytta dessa MOBILE FIRST till Date.Vue? */
 @media screen and (max-width:720px) {
   .weekdays span, .days span {width: 13.1%;}
 }

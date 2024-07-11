@@ -11,13 +11,12 @@ export default defineEventHandler(async (event) => {
     if (body.start_date && body.end_date) {
       console.log("Creates a multiple bookings")
       // Create a new user booking period
-      const userBookingResult = await sql`
-        INSERT INTO user_bookings (user_id, start_date, end_date)
-        VALUES (${body.user_id}, ${body.start_date}, ${body.end_date})
-        RETURNING user_booking_id;
-      `;
-
-      const userBookingId = userBookingResult.rows[0].user_booking_id;
+      // const userBookingResult = await sql`
+      //   INSERT INTO user_bookings (user_id, start_date, end_date)
+      //   VALUES (${body.user_id}, ${body.start_date}, ${body.end_date})
+      //   RETURNING user_booking_id;
+      // `;
+      // const userBookingId = userBookingResult.rows[0].user_booking_id;
 
       // Create individual bookings for each date within the booking period
       const bookingDates = generateDateRange(body.start_date, body.end_date);
@@ -28,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
         await sql`
           INSERT INTO bookings (user_id, booking_date, visitors_allowed)
-          VALUES (${body.user_id}, ${date}::date, ${body.visitors_allowed || true});
+          VALUES (${body.user_id}, ${date}::date, ${body.visitors_allowed});
         `;
         // await sql`
         //   INSERT INTO bookings (user_id, booking_date, visitors_allowed)
@@ -36,7 +35,7 @@ export default defineEventHandler(async (event) => {
         // `;
       }
 
-      return { userBookingId };
+      return { message: "201 Success" };
     } else {
       console.log("Creates a single booking")
       // Create a single booking
@@ -56,7 +55,7 @@ export default defineEventHandler(async (event) => {
 });
 
 // Helper function to generate a range of dates
-function generateDateRange(start:Date, end:Date) {
+function generateDateRange(start: Date, end: Date) {
   const dates = [];
   const startDate = new Date(start);
   const endDate = new Date(end);
