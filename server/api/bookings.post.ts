@@ -10,43 +10,30 @@ export default defineEventHandler(async (event) => {
     // Check if the request is for a single booking or multiple bookings
     if (body.start_date && body.end_date) {
       console.log("Creates a multiple bookings")
-      // Create a new user booking period
-      // const userBookingResult = await sql`
-      //   INSERT INTO user_bookings (user_id, start_date, end_date)
-      //   VALUES (${body.user_id}, ${body.start_date}, ${body.end_date})
-      //   RETURNING user_booking_id;
-      // `;
-      // const userBookingId = userBookingResult.rows[0].user_booking_id;
 
       // Create individual bookings for each date within the booking period
       const bookingDates = generateDateRange(body.start_date, body.end_date);
 
-      // console.log("bookingDates are: ", bookingDates)
-
       for (const date of bookingDates) {
-
         await sql`
           INSERT INTO bookings (user_id, booking_date, visitors_allowed)
           VALUES (${body.user_id}, ${date}::date, ${body.visitors_allowed});
         `;
-        // await sql`
-        //   INSERT INTO bookings (user_id, booking_date, visitors_allowed)
-        //   VALUES (${body.user_id}, ${date}, ${body.visitors_allowed || true});
-        // `;
       }
 
-      return { message: "201 Success" };
+      return ({ status: 201, message: "multiple bookings created: 201 Success" });
     } else {
       console.log("Creates a single booking")
       // Create a single booking
       const bookingResult = await sql`
         INSERT INTO bookings (user_id, booking_date, visitors_allowed)
-        VALUES (${body.user_id}, ${body.booking_date}, ${body.visitors_allowed || true})
+        VALUES (${body.user_id}, ${body.booking_date}, ${body.visitors_allowed})
         RETURNING booking_id;
       `;
 
       const bookingId = bookingResult.rows[0].booking_id;
-      return { bookingId };
+      return ({ status: 201, body: { bookingId }, message: "201 Success" });
+      // return { bookingId };
     }
   } catch (error) {
     console.error(error);
