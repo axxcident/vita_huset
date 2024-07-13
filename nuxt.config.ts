@@ -24,10 +24,11 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["@nuxt/image"],
+  modules: ["@nuxt/image", "@pinia/nuxt"],
 
   runtimeConfig: {
     connectionString: process.env.POSTGRES_URL,
     databaseUrl: process.env.POSTGRES_URL,
-  },
+  }
+
 });

@@ -38,6 +38,7 @@
 
 <script>
 import { ref, computed, onMounted, watch } from 'vue';
+import { defineStore } from 'pinia'
 import { useFetch } from '#app';
 
 export default {

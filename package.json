@@ -19,9 +19,14 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@pinia/nuxt": "0.5.1",
     "@vercel/postgres": "^0.8.0",
     "@vue/compiler-sfc": "^3.4.27",
     "@vue/runtime-core": "^3.4.27",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "pinia": "^2.1.7"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
