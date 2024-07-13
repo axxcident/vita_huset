@@ -4,12 +4,17 @@
     :class="{
     'booked': isBooked,
     'visitorsAllowed': visitorsAllowed,
-    'visitorsNotAllowed': !visitorsAllowed && isBooked
+    'visitorsNotAllowed': !visitorsAllowed && isBooked,
+    'selected': isSelected
     }"
   >
-    <span class="date" :class="{'currentDay': currentDay}">
+    <button
+    class="date"
+    :class="{'currentDay': currentDay}"
+    @click="toggleDate"
+    >
       {{ day }}
-    </span>
+    </button>
 </span>
 </template>
 
@@ -23,7 +28,10 @@ class="date"
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useDatesStore } from '~/stores/dates';
 import { useFetch } from '#app';
+
+const datesStore = useDatesStore();
 
 const props = defineProps({
   year: Number,
@@ -34,32 +42,23 @@ const props = defineProps({
   currentDay: Boolean,
 });
 
-// console.log("for date: ", props.day, "visitors are allowed: ", props.visitorsAllowed);
-
 // const isBooked = ref(false);
-const canBook = ref(false);
+// const canBook = ref(false);
 
-// console.log("props.year, props.month, props.day, props.userId");
-// console.log(props.year, props.month, props.day, props.userId);
+function getDateString() {
+  const monthStr = (props.month + 1).toString().padStart(2, '0');
+  const dayStr = props.day.toString().padStart(2, '0');
+  return `${props.year}-${monthStr}-${dayStr}`;
+}
 
+const dateString = computed(() => getDateString());
 
-// const handleBooking = async () => {
-//   if (canBook.value) {
-//     // Send POST request to book the date
-//     const response = await $fetch('/api/bookings', {
-//       method: 'POST',
-//       body: {
-//         userId: props.userId,
-//         bookingDate: `${props.year}-${props.month + 1}-${props.day}`,
-//         visitorsAllowed: false, // Set the desired value
-//       },
-//     });
+const isSelected = computed(() => datesStore.selectedDates.includes(dateString.value));
 
-//     // Update the UI based on the response
-//     isBooked.value = true;
-//     canBook.value = false;
-//   }
-// };
+function toggleDate() {
+  datesStore.toggleSelectedDate(dateString.value);
+}
+
 </script>
 
 <style scoped>
@@ -67,9 +66,7 @@ const canBook = ref(false);
 .date-container {
   position: relative;
   background-color: white;
-  /* background-color: rgb(42, 42, 42); */
   position: relative;
-  /* overflow: hidden; */
   text-align: center;
   font-size:2rem;
   border: 1px solid black;
@@ -77,20 +74,17 @@ const canBook = ref(false);
 }
 
 .date-container .date {
-  /* position: relative; */
   z-index: 2;
+  width: 100%;
 }
 
 .booked {
   color: white;
   background-color: rgb(55, 55, 55);
   border: 1px solid rgb(255, 11, 11);
-  /* background-color: rgb(160, 42, 42); */
 }
 
 .currentDay {
-  /* color: rgb(79, 79, 79);
-  background-color: rgb(126, 184, 229); */
   position: relative;
 }
 
@@ -99,18 +93,37 @@ const canBook = ref(false);
   position: absolute;
   color: rgb(51, 168, 194);
   font-size: 0.5rem;
-  top: 24px;
-  left: -117px;
+  top: 69%;
+  left: -60%;
   right: 0;
   bottom: 0;
   z-index: 1;
 }
 
+
+/* Media queries for adjusting left property */
+@media (max-width: 1200px) {
+  .currentDay::after {
+    left: -50%;
+  }
+}
+ @media (max-width: 992px) {
+  .currentDay::after {
+    left: -40%;
+  }
+}
+
+@media (max-width: 768px) {
+  .currentDay::after {
+    content: none;
+  }
+}
+
 .currentDay::before {
   content: "";
   position: absolute;
-  top: 25px;
-  left: -68px;
+  top: 70%;
+  left: 5%;
   right: 0;
   bottom: 0;
   width: 10px;
@@ -155,19 +168,9 @@ const canBook = ref(false);
   border-radius: 100%;
 }
 
-/*
-.visitorsAllowed::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom right, transparent 75%, rgb(255, 42, 42) 50%);
-  /* background: linear-gradient(to bottom right, transparent 75%, rgb(187, 187, 187) 50%);
-  z-index: 1;
-  pointer-events: none;
-  border-bottom-right-radius: .9rem;
-} */
+.selected {
+  color: white;
+  background-color: rgb(51, 168, 194);
+}
 
 </style>

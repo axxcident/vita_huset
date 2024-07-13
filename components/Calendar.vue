@@ -38,7 +38,6 @@
 
 <script>
 import { ref, computed, onMounted, watch } from 'vue';
-import { defineStore } from 'pinia'
 import { useFetch } from '#app';
 
 export default {
@@ -212,15 +211,15 @@ export default {
 
 /* Flytta dessa MOBILE FIRST till Date.Vue? */
 @media screen and (max-width:720px) {
-  .weekdays span, .days span {width: 13.1%;}
+ .days button {width: 13.1%;}
 }
 
 @media screen and (max-width: 420px) {
-  .weekdays span, .days span {width: 12.5%;}
+  .weekdays span, .days button {width: 12.5%;}
   .days li .active {padding: 2px;}
 }
 
 @media screen and (max-width: 290px) {
-  .weekdays span, .days span {width: 12.2%;}
+  .weekdays span, .days button {width: 12.2%;}
 }
 </style>
