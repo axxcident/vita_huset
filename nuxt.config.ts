@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     connectionString: process.env.POSTGRES_URL,
     databaseUrl: process.env.POSTGRES_URL,
-  }
+  },
 
+  compatibilityDate: "2024-07-16"
 });
