@@ -22,16 +22,24 @@
         <span class="text-center">Lö</span>
         <span class="text-center">Sö</span>
       </div>
-      <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
-        <Date v-for="day in days"
-        :key="day"
-        :year="year"
-        :month="month"
-        :day="day"
-        :isBooked="isBooked(day)"
-        :visitorsAllowed="getVisitorsAllowed(day)"
-        :currentDay="isCurrentDay(day)"
-        />
+      <div class="flex">
+        <div>
+          <p>Week number:</p>
+          <ul class="w-[90%] mx-auto grid grid-rows-6 grid-cols-1 gap-2">
+            <li v-for="week in weeks" :key="week" class="text-center">{{ week }}</li>
+          </ul>
+        </div>
+        <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
+          <Date v-for="day in days"
+          :key="day"
+          :year="year"
+          :month="month"
+          :day="day"
+          :isBooked="isBooked(day)"
+          :visitorsAllowed="getVisitorsAllowed(day)"
+          :currentDay="isCurrentDay(day)"
+          />
+        </div>
       </div>
   </section>
 </template>
@@ -64,20 +72,6 @@ export default {
       return year.value === currentYear && month.value === currentMonth && day === currentDay;
     };
 
-    // async function fetchBookings() {
-    //   const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
-    //   bookings.value = data.value;
-    // }
-
-    // onMounted(() => {
-
-    //   if (bookings.value.length === 0) {
-    //     fetchBookings();
-    //   }
-    //   // fetchBookings();
-    // });
-
-
     const bookingsMap = computed(() => {
       const map = new Map();
       bookings.value.forEach(booking => {
@@ -101,20 +95,34 @@ export default {
 
     watch([year, month], fetchBookings, { immediate: true });
 
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+      return weekNo;
+    }
+
+    const weeks = computed(() => {
+    const daysInMonth = getDaysInMonth(year.value, month.value);
+    const firstDateOfMonth = new Date(year.value, month.value, 1);
+    const lastDateOfMonth = new Date(year.value, month.value, daysInMonth);
+
+    const firstWeek = getWeekNumber(firstDateOfMonth);
+    const lastWeek = getWeekNumber(lastDateOfMonth);
+
+    const weekNumbers = [];
+    for (let week = firstWeek; week <= lastWeek; week++) {
+      weekNumbers.push(week);
+    }
+
+    return weekNumbers;
+  });
 
     const days = computed(() => {
       const daysInMonth = getDaysInMonth(year.value, month.value);
       return Array.from({ length: daysInMonth }, (_, i) => i + 1);
     });
-
-    // const isBooked = (day) => {
-    //   return bookings.value.some(booking => new Date(booking.booking_date).getDate() === day);
-    // };
-
-    // const getVisitorsAllowed = (day) => {
-    //   const booking = bookings.value.find(booking => new Date(booking.booking_date).getDate() === day);
-    //   return booking ? booking.visitors_allowed : false;
-    // };
 
     const nextMonth = () => {
       if (month.value === 11) {
@@ -147,6 +155,7 @@ export default {
       isBooked,
       getVisitorsAllowed,
       isCurrentDay,
+      weeks,
     }
   }
 }
