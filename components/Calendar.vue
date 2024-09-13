@@ -20,7 +20,7 @@
         </div>
 
         <div class="rounded-lg bg-[rgba(61,61,61,0.1)]">
-          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 gap-[23px]">
+          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 gap-[24px]">
             <li v-for="week in weeks" :key="week" class="text-center text-3xl">{{ week }}</li>
           </ul>
         </div>
@@ -126,13 +126,24 @@ export default {
     const firstDateOfMonth = new Date(year.value, month.value, 1);
     const lastDateOfMonth = new Date(year.value, month.value, daysInMonth);
 
-    const firstWeek = getWeekNumber(firstDateOfMonth);
-    const lastWeek = getWeekNumber(lastDateOfMonth);
+    let firstWeek = getWeekNumber(firstDateOfMonth);
+    let lastWeek = getWeekNumber(lastDateOfMonth);
 
     const weekNumbers = [];
-    for (let week = firstWeek; week <= lastWeek; week++) {
-      weekNumbers.push(week);
-    }
+
+      // Handle year-end cases
+      if (month.value === 11) {
+        for (let week = firstWeek; week <= 52; week++) {
+          weekNumbers.push(week);
+        }
+        if (lastWeek === 1) {
+          weekNumbers.push(1);
+        }
+      } else {
+        for (let week = firstWeek; week <= lastWeek; week++) {
+          weekNumbers.push(week);
+        }
+      }
 
     return weekNumbers;
   });
