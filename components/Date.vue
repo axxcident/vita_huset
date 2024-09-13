@@ -10,21 +10,13 @@
   >
     <button
     class="date"
-    :class="{'currentDay': currentDay}"
+    :class="{'currentDay': isCurrentDay}"
     @click="toggleDate"
     >
       {{ day }}
     </button>
 </span>
 </template>
-
-<!-- <span
-class="date"
-:class="{ 'booked': isBooked, 'visitorsAllowed': visitorsAllowed }"
-@click="handleBooking"
->
-{{ day }}
-</span> -->
 
 <script setup>
 import { ref, onMounted } from 'vue';
@@ -39,7 +31,15 @@ const props = defineProps({
   day: Number,
   isBooked: Boolean,
   visitorsAllowed: Boolean,
-  currentDay: Boolean,
+  // currentDay: Boolean,
+});
+
+const today = new Date();
+
+const isCurrentDay = computed(() => {
+  return props.year === today.getFullYear() &&
+         props.month === today.getMonth() &&
+         props.day === today.getDate();
 });
 
 // const isBooked = ref(false);
