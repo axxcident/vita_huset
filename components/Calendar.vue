@@ -13,32 +13,41 @@
       <button id="prev" class="absolute left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
       <button id="next" class="absolute right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
-      <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
-        <span class="text-center">Må</span>
-        <span class="text-center">Ti</span>
-        <span class="text-center">On</span>
-        <span class="text-center">To</span>
-        <span class="text-center">Fr</span>
-        <span class="text-center">Lö</span>
-        <span class="text-center">Sö</span>
+
+      <div class="flex">
+        <div>
+          <p class="text-center">Vecko- nummer</p>
+        </div>
+
+        <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
+          <span class="text-center">Må</span>
+          <span class="text-center">Ti</span>
+          <span class="text-center">On</span>
+          <span class="text-center">To</span>
+          <span class="text-center">Fr</span>
+          <span class="text-center">Lö</span>
+          <span class="text-center">Sö</span>
+        </div>
       </div>
       <div class="flex">
         <div>
-          <p>Week number:</p>
+          <!-- <p>Week number:</p> -->
           <ul class="w-[90%] mx-auto grid grid-rows-6 grid-cols-1 gap-2">
             <li v-for="week in weeks" :key="week" class="text-center">{{ week }}</li>
           </ul>
         </div>
         <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
-          <Date v-for="day in days"
-          :key="day"
-          :year="year"
-          :month="month"
-          :day="day"
-          :isBooked="isBooked(day)"
-          :visitorsAllowed="getVisitorsAllowed(day)"
-          :currentDay="isCurrentDay(day)"
-          />
+          <template v-for="(day, index) in days" :key="index">
+            <Date v-if="day !== null"
+              :year="year"
+              :month="month"
+              :day="day"
+              :isBooked="isBooked(day)"
+              :visitorsAllowed="getVisitorsAllowed(day)"
+              :currentDay="isCurrentDay(day)"
+            />
+            <div v-else class="empty-cell"></div>
+          </template>
         </div>
       </div>
   </section>
@@ -63,6 +72,10 @@ export default {
       const date = new Date(year.value, month.value);
       return date.toLocaleString('default', { month: 'long' });
     });
+
+    function getFirstDayOfMonth(year, month) {
+      return new Date(year, month, 1).getDay();
+    }
 
     function getDaysInMonth(year, month) {
       return new Date(year, month + 1, 0).getDate();
@@ -121,7 +134,19 @@ export default {
 
     const days = computed(() => {
       const daysInMonth = getDaysInMonth(year.value, month.value);
-      return Array.from({ length: daysInMonth }, (_, i) => i + 1);
+      const firstDay = getFirstDayOfMonth(year.value, month.value);
+
+      // Adjust for Monday as the first day of the week
+      const adjustment = firstDay === 0 ? 6 : firstDay - 1;
+
+      // Create array with empty cells for days before the month starts
+      const emptyCells = Array(adjustment).fill(null);
+
+      // Create array with the days of the month
+      const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+      // Combine empty cells and month days
+      return [...emptyCells, ...monthDays];
     });
 
     const nextMonth = () => {
@@ -164,6 +189,16 @@ export default {
 <style scoped>
   * {box-sizing: border-box;}
   ul {list-style-type: none;}
+
+.empty-cell {
+  position: relative;
+  background-color: rgb(170, 170, 170);
+  position: relative;
+  text-align: center;
+  font-size:2rem;
+  border: 1px solid black;
+  border-radius: .5rem;
+}
 
 .month {
   padding: 70px 25px;
