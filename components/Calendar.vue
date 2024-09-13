@@ -10,8 +10,8 @@
   </div>
 
   <section class="relative flex w-full">
-      <button id="prev" class="absolute left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
-      <button id="next" class="absolute right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
+      <button id="prev" class="absolute pb-[6px] pr-[4px] left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
+      <button id="next" class="absolute pb-[6px] right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
 
       <div class="ml-4">
