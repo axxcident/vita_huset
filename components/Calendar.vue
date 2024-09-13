@@ -9,15 +9,25 @@
     </section>
   </div>
 
-  <section class="relative">
+  <section class="relative flex w-full">
       <button id="prev" class="absolute left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
       <button id="next" class="absolute right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
 
-      <div class="flex">
+      <div class="ml-4">
         <div>
-          <p class="text-center">Vecko- nummer</p>
+          <p class="text-center text-[18px] leading-tight mb-1">Vecko- nummer</p>
         </div>
+
+        <div class="rounded-lg bg-[rgba(61,61,61,0.1)]">
+          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 gap-[23px]">
+            <li v-for="week in weeks" :key="week" class="text-center text-3xl">{{ week }}</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="w-full">
 
         <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
           <span class="text-center">Må</span>
@@ -28,14 +38,7 @@
           <span class="text-center">Lö</span>
           <span class="text-center">Sö</span>
         </div>
-      </div>
-      <div class="flex">
-        <div>
-          <!-- <p>Week number:</p> -->
-          <ul class="w-[90%] mx-auto grid grid-rows-6 grid-cols-1 gap-2">
-            <li v-for="week in weeks" :key="week" class="text-center">{{ week }}</li>
-          </ul>
-        </div>
+
         <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
           <template v-for="(day, index) in days" :key="index">
             <Date v-if="day !== null"
@@ -49,7 +52,9 @@
             <div v-else class="empty-cell"></div>
           </template>
         </div>
+
       </div>
+
   </section>
 </template>
 
@@ -243,7 +248,7 @@ export default {
 
 #next:hover {
   color: rgb(255, 255, 255);
-  background-color: rgba(52, 52, 52, 0.6);
+  background-color: #34343499;
   transform: scale(1.1);
 }
 
