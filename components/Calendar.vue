@@ -69,6 +69,7 @@ export default {
 
     const bookings = ref([]);
 
+    // Gör om månader till svenska namn
     const monthName = computed(() => {
       const date = new Date(year.value, month.value);
       return date.toLocaleString('default', { month: 'long' });
@@ -187,7 +188,6 @@ export default {
       previousMonth,
       isBooked,
       getVisitorsAllowed,
-      // isCurrentDay,
       weeks,
     }
   }
