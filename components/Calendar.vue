@@ -2,7 +2,7 @@
   <div class="month">
     <h1 class="text-white tracking-wide p-3 capitalize">vita huset bokningskalender</h1>
     <section>
-        <h4 class="text-[4rem] leading-none">
+        <h4 class="text-[4rem] leading-none capitalize">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
@@ -69,10 +69,9 @@ export default {
 
     const bookings = ref([]);
 
-    // Gör om månader till svenska namn
     const monthName = computed(() => {
       const date = new Date(year.value, month.value);
-      return date.toLocaleString('default', { month: 'long' });
+      return date.toLocaleString('sv-SE', { month: 'long' });
     });
 
     function getFirstDayOfMonth(year, month) {
@@ -219,7 +218,7 @@ export default {
 }
 
 .month h1 {
-  font-size: 2em;
+  font-size: 2.5em;
   text-shadow:
     -1px -1px 0 #000,
      1px -1px 0 #000,

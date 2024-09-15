@@ -50,6 +50,7 @@
 	border-radius: 0.5rem;
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 1.5rem;
   }
 
   .booking-box {
