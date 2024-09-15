@@ -48,7 +48,6 @@
               :isBooked="isBooked(day)"
               :visitorsAllowed="getVisitorsAllowed(day)"
             />
-            <!-- :currentDay="isCurrentDay(day)" -->
             <div v-else class="empty-cell"></div>
           </template>
         </div>
@@ -67,9 +66,6 @@ export default {
     const currentDate = new Date();
     const year = ref(currentDate.getFullYear());
     const month = ref(currentDate.getMonth());
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
 
     const bookings = ref([]);
 
@@ -85,10 +81,6 @@ export default {
     function getDaysInMonth(year, month) {
       return new Date(year, month + 1, 0).getDate();
     }
-
-    // const isCurrentDay = (day) => {
-    //   return year.value === currentYear && month.value === currentMonth && day === currentDay;
-    // };
 
     const bookingsMap = computed(() => {
       const map = new Map();

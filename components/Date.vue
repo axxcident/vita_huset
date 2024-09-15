@@ -31,15 +31,23 @@ const props = defineProps({
   day: Number,
   isBooked: Boolean,
   visitorsAllowed: Boolean,
-  // currentDay: Boolean,
 });
 
-const today = new Date();
+const now = ref(null);
+
+onMounted(() => {
+  now.value = new Date();
+  // Set up the interval here
+  setInterval(() => {
+    now.value = new Date();
+  }, 60000);
+});
 
 const isCurrentDay = computed(() => {
-  return props.year === today.getFullYear() &&
-         props.month === today.getMonth() &&
-         props.day === today.getDate();
+  if (!now.value) return false;
+  return props.year === now.value.getFullYear() &&
+         props.month === now.value.getMonth() &&
+         props.day === now.value.getDate();
 });
 
 // const isBooked = ref(false);
