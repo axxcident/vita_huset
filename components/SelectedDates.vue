@@ -9,7 +9,10 @@
 				<p v-else>No dates selected</p>
 			</div>
 			<div class="booking-box">
-				<button class="boka-knapp">Boka</button>
+				<button class="boka-knapp"
+				        :class="{ 'active': hasDatesSelected, 'inactive': !hasDatesSelected }"
+        				:disabled="!hasDatesSelected"
+				>Boka</button>
 			</div>
 		</div>
 	</div>
@@ -18,9 +21,12 @@
   <script setup>
   import { useDatesStore } from '~/stores/dates';
   import { storeToRefs } from 'pinia';
+  import { computed } from 'vue';
 
   const datesStore = useDatesStore();
   const { selectedDates } = storeToRefs(datesStore);
+
+  const hasDatesSelected = computed(() => selectedDates.value.length > 0);
 
   function formatDate(dateString) {
 	// Implement date formatting logic here
@@ -48,17 +54,30 @@
 
   .booking-box {
 	display: flex;
-	align-items: center;
+	align-items: start;
   }
 
   .boka-knapp {
-	background-color: rgb(56, 194, 51);
 	color: white;
 	padding: 0.5rem 1rem;
 	border: none;
 	border-radius: 0.5rem;
-	cursor: pointer;
 	font-size: 1.2rem;
+	transition: all 0.3s ease;
+  }
+
+  .inactive {
+	background-color: rgb(170, 170, 170);
+	cursor: not-allowed;
+  }
+
+  .active {
+	background-color: rgb(56, 194, 51);
+	cursor: pointer;
+  }
+
+  .boka-knapp:hover.active {
+  background-color: rgb(46, 164, 41);
   }
 
   </style>

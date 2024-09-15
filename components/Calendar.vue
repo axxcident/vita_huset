@@ -15,7 +15,7 @@
 
 
       <div class="ml-4">
-        <div>
+        <div class="mt-[-5px] mb-[10px]">
           <p class="text-center text-[18px] leading-tight mb-1">Vecko- nummer</p>
         </div>
 
