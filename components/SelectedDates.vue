@@ -12,26 +12,39 @@
 				<button class="boka-knapp"
 				        :class="{ 'active': hasDatesSelected, 'inactive': !hasDatesSelected }"
         				:disabled="!hasDatesSelected"
+						@click="openBookingOverlay"
 				>Boka</button>
 			</div>
 		</div>
+		<BookingOverlay ref="bookingOverlay" />
 	</div>
   </template>
 
   <script setup>
   import { useDatesStore } from '~/stores/dates';
   import { storeToRefs } from 'pinia';
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
+  import BookingOverlay from './BookingOverlay.vue';
 
   const datesStore = useDatesStore();
   const { selectedDates } = storeToRefs(datesStore);
 
   const hasDatesSelected = computed(() => selectedDates.value.length > 0);
 
-  function formatDate(dateString) {
-	// Implement date formatting logic here
-	return dateString;
-  }
+  const bookingOverlay = ref(null);
+
+//   function formatDate(dateString) {
+// 	// Implement date formatting logic here
+// 	return dateString;
+//   }
+	function formatDate(dateString) {
+	const [year, month, day] = dateString.split('-');
+	return `${day}/${month}/${year}`;
+	}
+
+	function openBookingOverlay() {
+	bookingOverlay.value.openOverlay();
+	}
   </script>
 
   <style scoped>
