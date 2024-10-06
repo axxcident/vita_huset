@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-type SelectedDate = string // Assuming each date is a string
+type SelectedDate = string
 type SelectedDates = SelectedDate[]
 
 // composition type of store

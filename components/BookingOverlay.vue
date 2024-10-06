@@ -9,13 +9,20 @@
 				<li v-for="date in selectedDates" :key="date">{{ formatDate(date) }}</li>
 			  </ul>
 			</div>
+			<div class="user-selection">
+				<h3>Välj Användare:</h3>
+				<select v-model="selectedUser" @change="userStore.setUser(selectedUser)">
+					<option value="">Välj Användare</option>
+					<option v-for="user in availableUsers" :key="user" :value="user">{{ user }}</option>
+				</select>
+			</div>
 			<div class="visitors-allowed">
 			  <label>
 				<input type="checkbox" v-model="visitorsAllowed"> Besökare Tillåtna
 			  </label>
 			</div>
 			<div class="actions">
-			  <button @click="confirmBooking" class="confirm-btn">Bekräfta Bokning</button>
+			  <button @click="confirmBooking" class="confirm-btn" :disabled="!userStore.isUserSelected">Bekräfta Bokning</button>
 			  <button @click="closeOverlay" class="cancel-btn">Avbryt</button>
 			</div>
 		</div>
@@ -28,18 +35,27 @@
   </template>
 
   <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useDatesStore } from '~/stores/dates';
+  import { useUserStore } from '~/stores/user';
   import { storeToRefs } from 'pinia';
 
+  const userStore = useUserStore();
   const datesStore = useDatesStore();
   const { selectedDates } = storeToRefs(datesStore);
 
   const isOpen = ref(false);
   const visitorsAllowed = ref(false);
-  const isLoading = ref(false)
+  const isLoading = ref(false);
+  const selectedUser = ref('');
+  const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel'];
 
   const emit = defineEmits(['close', 'booking-complete']);
+
+  onMounted(() => {
+	userStore.loadUser();
+	selectedUser.value = userStore.currentUser || '';
+  });
 
   function formatDate(dateString) {
 	const [year, month, day] = dateString.split('-');
@@ -56,13 +72,14 @@
   }
 
   async function confirmBooking() {
+	if (!userStore.isUserSelected) return;
 	isLoading.value = true;
 	try {
 	  const response = await $fetch('/api/bookings', {
 		method: 'POST',
 		body: JSON.stringify({
 		  user_id: "42bbd328-08d7-4d92-b37c-128dd7f50cbc",
-		  user_name: "Axel", // Placeholder name
+		  user_name: userStore.currentUser,
 		  booking_dates: selectedDates.value,
 		  visitors_allowed: visitorsAllowed.value
 		})
@@ -89,7 +106,17 @@
 
   <style scoped>
 
-	.loading-container {
+  .user-selection {
+	margin-bottom: 1rem;
+	}
+
+  .user-selection select {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 1rem;
+	}
+
+  .loading-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -97,7 +124,7 @@
 	height: 200px;
 	}
 
-	.loading-spinner {
+  .loading-spinner {
 	border: 4px solid #f3f3f3;
 	border-top: 4px solid #3498db;
 	border-radius: 50%;
@@ -106,7 +133,7 @@
 	animation: spin 1s linear infinite;
 	}
 
-	@keyframes spin {
+  @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
 	}
