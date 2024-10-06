@@ -36,11 +36,10 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
-  // function setSelectedDates(dates: SelectedDates) {
-  //   console.log('Setting selected dates:', dates)
-  //   selectedDates.value = dates
-  //   console.log('Selected dates are now:', selectedDates.value)
-  // }
+  function clearSelectedDates() {
+    selectedDates.value = []
+    console.log('All selected dates cleared')
+  }
 
   async function makeBooking() {
     try {
@@ -65,5 +64,5 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
-  return { selectedDates, makeBooking, addSelectedDate, removeSelectedDate, toggleSelectedDate }
+  return { selectedDates, makeBooking, addSelectedDate, removeSelectedDate, toggleSelectedDate, clearSelectedDates }
 })

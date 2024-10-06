@@ -2,22 +2,28 @@
 	<div v-if="isOpen" class="overlay">
 	  <div class="overlay-content">
 		<h2>Bekräfta Bokning</h2>
-		<div class="selected-dates">
-		  <h3>Valda Datum:</h3>
-		  <ul>
-			<li v-for="date in selectedDates" :key="date">{{ formatDate(date) }}</li>
-		  </ul>
+		<div v-if="!isLoading" class="booking-content">
+			<div class="selected-dates">
+			  <h3>Valda Datum:</h3>
+			  <ul>
+				<li v-for="date in selectedDates" :key="date">{{ formatDate(date) }}</li>
+			  </ul>
+			</div>
+			<div class="visitors-allowed">
+			  <label>
+				<input type="checkbox" v-model="visitorsAllowed"> Besökare Tillåtna
+			  </label>
+			</div>
+			<div class="actions">
+			  <button @click="confirmBooking" class="confirm-btn">Bekräfta Bokning</button>
+			  <button @click="closeOverlay" class="cancel-btn">Avbryt</button>
+			</div>
 		</div>
-		<div class="visitors-allowed">
-		  <label>
-			<input type="checkbox" v-model="visitorsAllowed"> Besökare Tillåtna
-		  </label>
+		<div v-else class="loading-container">
+		  <div class="loading-spinner"></div>
+		  <p>Processing your booking...</p>
 		</div>
-		<div class="actions">
-		  <button @click="confirmBooking" class="confirm-btn">Bekräfta Bokning</button>
-		  <button @click="closeOverlay" class="cancel-btn">Avbryt</button>
-		</div>
-	  </div>
+	</div>
 	</div>
   </template>
 
@@ -31,8 +37,9 @@
 
   const isOpen = ref(false);
   const visitorsAllowed = ref(false);
+  const isLoading = ref(false)
 
-  const emit = defineEmits(['close']);
+  const emit = defineEmits(['close', 'booking-complete']);
 
   function formatDate(dateString) {
 	const [year, month, day] = dateString.split('-');
@@ -49,6 +56,7 @@
   }
 
   async function confirmBooking() {
+	isLoading.value = true;
 	try {
 	  const response = await $fetch('/api/bookings', {
 		method: 'POST',
@@ -61,8 +69,9 @@
 	  });
 
 	  if (response.status === 201) {
-		alert('Booking confirmed successfully!');
 		datesStore.clearSelectedDates();
+		emit('booking-complete');
+		await new Promise(resolve => setTimeout(resolve, 2000));
 		closeOverlay();
 	  } else {
 		throw new Error('Booking failed');
@@ -70,13 +79,38 @@
 	} catch (error) {
 	  console.error('Error during booking:', error);
 	  alert('An error occurred while booking. Please try again.');
-	}
+	} finally {
+    isLoading.value = false;
+  	}
   }
 
   defineExpose({ openOverlay });
   </script>
 
   <style scoped>
+
+	.loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 200px;
+	}
+
+	.loading-spinner {
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid #3498db;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+	}
+
   .overlay {
 	position: fixed;
 	top: 0;

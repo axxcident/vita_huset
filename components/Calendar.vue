@@ -54,12 +54,14 @@
 
       </div>
 
-  </section>
+    </section>
+    <SelectedDates @booking-complete="handleBookingComplete"/>
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useFetch } from '#app';
+import SelectedDates from './SelectedDates.vue';
 
 export default {
   setup () {
@@ -104,6 +106,10 @@ export default {
     }
 
     watch([year, month], fetchBookings, { immediate: true });
+
+    function handleBookingComplete() {
+      fetchBookings();
+    }
 
     function getWeekNumber(d) {
       d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -188,6 +194,7 @@ export default {
       isBooked,
       getVisitorsAllowed,
       weeks,
+      handleBookingComplete
     }
   }
 }

@@ -16,7 +16,7 @@
 				>Boka</button>
 			</div>
 		</div>
-		<BookingOverlay ref="bookingOverlay" />
+		<BookingOverlay ref="bookingOverlay" @booking-complete="handleBookingComplete"/>
 	</div>
   </template>
 
@@ -33,10 +33,6 @@
 
   const bookingOverlay = ref(null);
 
-//   function formatDate(dateString) {
-// 	// Implement date formatting logic here
-// 	return dateString;
-//   }
 	function formatDate(dateString) {
 	const [year, month, day] = dateString.split('-');
 	return `${day}/${month}/${year}`;
@@ -45,6 +41,12 @@
 	function openBookingOverlay() {
 	bookingOverlay.value.openOverlay();
 	}
+
+	function handleBookingComplete() {
+		emit('booking-complete');
+	}
+
+	const emit = defineEmits(['booking-complete']);
   </script>
 
   <style scoped>
