@@ -35,7 +35,7 @@
   </template>
 
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, computed } from 'vue';
   import { useDatesStore } from '~/stores/dates';
   import { useUserStore } from '~/stores/user';
   import { storeToRefs } from 'pinia';
@@ -47,14 +47,13 @@
   const isOpen = ref(false);
   const visitorsAllowed = ref(false);
   const isLoading = ref(false);
-  const selectedUser = ref('');
   const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel'];
 
   const emit = defineEmits(['close', 'booking-complete']);
 
-  onMounted(() => {
-	userStore.loadUser();
-	selectedUser.value = userStore.currentUser || '';
+  const selectedUser = computed({
+	get: () => userStore.currentUser || '',
+	set: (value) => userStore.setUser(value || null)
   });
 
   function formatDate(dateString) {
