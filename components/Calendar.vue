@@ -47,6 +47,7 @@
               :day="day"
               :isBooked="isBooked(day)"
               :visitorsAllowed="getVisitorsAllowed(day)"
+              :bookingInfo="getBookingInfo(day)"
             />
             <div v-else class="empty-cell"></div>
           </template>
@@ -183,6 +184,13 @@ export default {
       fetchBookings();
     };
 
+    const getBookingInfo = computed(() => (day) => {
+      const booking = bookingsMap.value.get(day);
+      return booking ? {
+        userName: booking.user_name || 'Anonymous',
+        visitorsAllowed: booking.visitors_allowed
+      } : null;
+    });
 
     return {
       year,
@@ -194,7 +202,8 @@ export default {
       isBooked,
       getVisitorsAllowed,
       weeks,
-      handleBookingComplete
+      handleBookingComplete,
+      getBookingInfo
     }
   }
 }

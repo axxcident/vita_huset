@@ -12,8 +12,8 @@ export default defineEventHandler(async (event) => {
 
       for (const date of body.booking_dates) {
         await sql`
-          INSERT INTO bookings (user_id, booking_date, visitors_allowed)
-          VALUES (${body.user_id}, ${date}::date, ${body.visitors_allowed});
+          INSERT INTO bookings (user_id, user_name, booking_date, visitors_allowed)
+          VALUES (${body.user_id}, ${body.user_name}, ${date}::date, ${body.visitors_allowed});
         `;
       }
 

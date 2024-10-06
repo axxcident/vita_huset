@@ -7,21 +7,27 @@
     'visitorsNotAllowed': !visitorsAllowed && isBooked,
     'selected': isSelected
     }"
+    @mouseenter="showTooltip"
+    @mouseleave="hideTooltip"
   >
     <button
     class="date"
     :class="{'currentDay': isCurrentDay}"
     @click="toggleDate"
+    :disabled="isBooked"
     >
       {{ day }}
     </button>
-</span>
+    <div v-if="showBookingInfo" class="tooltip">
+      <p>Bokad av: {{ bookingInfo.userName }}</p>
+      <p>Besökare: {{ visitorsAllowed ? 'Tillåtna' : 'Ej Tillåtna' }}</p>
+    </div>
+  </span>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useDatesStore } from '~/stores/dates';
-import { useFetch } from '#app';
 
 const datesStore = useDatesStore();
 
@@ -31,13 +37,14 @@ const props = defineProps({
   day: Number,
   isBooked: Boolean,
   visitorsAllowed: Boolean,
+  bookingInfo: Object
 });
 
 const now = ref(null);
+const showBookingInfo = ref(false);
 
 onMounted(() => {
   now.value = new Date();
-  // Set up the interval here
   setInterval(() => {
     now.value = new Date();
   }, 60000);
@@ -49,9 +56,6 @@ const isCurrentDay = computed(() => {
          props.month === now.value.getMonth() &&
          props.day === now.value.getDate();
 });
-
-// const isBooked = ref(false);
-// const canBook = ref(false);
 
 function getDateString() {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
@@ -65,6 +69,16 @@ const isSelected = computed(() => datesStore.selectedDates.includes(dateString.v
 
 function toggleDate() {
   datesStore.toggleSelectedDate(dateString.value);
+}
+
+function showTooltip() {
+  if (props.isBooked) {
+    showBookingInfo.value = true;
+  }
+}
+
+function hideTooltip() {
+  showBookingInfo.value = false;
 }
 
 </script>
@@ -179,6 +193,23 @@ function toggleDate() {
 .selected {
   color: white;
   background-color: rgb(51, 168, 194);
+}
+
+.tooltip {
+  position: absolute;
+  top: -100%;
+  left: 70%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  padding: 5px;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.8);
+  font-size: 0.7rem;
+  z-index: 10;
+  white-space: nowrap;
+  transition: opacity 1s ease;
 }
 
 </style>

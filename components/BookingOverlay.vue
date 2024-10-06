@@ -62,6 +62,7 @@
 		method: 'POST',
 		body: JSON.stringify({
 		  user_id: "42bbd328-08d7-4d92-b37c-128dd7f50cbc",
+		  user_name: "Axel", // Placeholder name
 		  booking_dates: selectedDates.value,
 		  visitors_allowed: visitorsAllowed.value
 		})

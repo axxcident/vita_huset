@@ -29,7 +29,7 @@ export default defineEventHandler(async (events) => {
     // console.log("monthInt is: ", monthInt)
     const yearInt = parseInt(year as string, 10);
 
-    const bookings = await sql`SELECT booking_id, user_id, booking_date::text, visitors_allowed FROM bookings WHERE EXTRACT(MONTH FROM booking_date) = ${monthInt} AND EXTRACT(YEAR FROM booking_date) = ${yearInt} ORDER BY booking_date ASC`;
+    const bookings = await sql`SELECT booking_id, user_id, user_name, booking_date::text, visitors_allowed FROM bookings WHERE EXTRACT(MONTH FROM booking_date) = ${monthInt} AND EXTRACT(YEAR FROM booking_date) = ${yearInt} ORDER BY booking_date ASC`;
 
     return bookings.rows;
   }
