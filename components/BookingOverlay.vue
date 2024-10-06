@@ -62,8 +62,7 @@
 		method: 'POST',
 		body: JSON.stringify({
 		  user_id: "42bbd328-08d7-4d92-b37c-128dd7f50cbc",
-		  start_date: selectedDates.value[0],
-		  end_date: selectedDates.value[selectedDates.value.length - 1],
+		  booking_dates: selectedDates.value,
 		  visitors_allowed: visitorsAllowed.value
 		})
 	  });

@@ -10,8 +10,6 @@ export const useDatesStore = defineStore('dates', () => {
   function addSelectedDate(date: SelectedDate) {
     if (!selectedDates.value.includes(date)) {
       selectedDates.value.push(date)
-      console.log('Date added:', date)
-      console.log('Selected dates are now:', selectedDates.value)
     } else {
       console.log('Date already selected:', date)
     }
@@ -21,8 +19,6 @@ export const useDatesStore = defineStore('dates', () => {
     const index = selectedDates.value.indexOf(date)
     if (index > -1) {
       selectedDates.value.splice(index, 1)
-      console.log('Date removed:', date)
-      console.log('Selected dates are now:', selectedDates.value)
     } else {
       console.log('Date not found in selection:', date)
     }
@@ -38,7 +34,6 @@ export const useDatesStore = defineStore('dates', () => {
 
   function clearSelectedDates() {
     selectedDates.value = []
-    console.log('All selected dates cleared')
   }
 
   async function makeBooking() {
