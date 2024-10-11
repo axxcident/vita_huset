@@ -124,10 +124,10 @@ function hideTooltip() {
 }
 
 .currentDay::after {
-  content: "Today";
+  content: "Idag";
   position: absolute;
   color: rgb(51, 168, 194);
-  font-size: 0.5rem;
+  font-size: 0.6rem;
   top: 69%;
   left: -60%;
   right: 0;
