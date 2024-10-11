@@ -6,7 +6,8 @@
     'visitorsAllowed': visitorsAllowed,
     'visitorsNotAllowed': !visitorsAllowed && isBooked,
     'selected': isSelected,
-    'user-booked': isUserBooked
+    'user-booked': isUserBooked,
+    'selected-for-unbooking': isSelectedForUnbooking
     }"
     @mouseenter="showTooltip"
     @mouseleave="hideTooltip"
@@ -53,6 +54,7 @@ const dateString = computed(() => {
 
 const isSelected = computed(() => datesStore.selectedDates.includes(dateString.value));
 const isUserBooked = computed(() => props.bookingInfo && props.bookingInfo.userId === userStore.currentUserInfo?.id);
+const isSelectedForUnbooking = computed(() => datesStore.selectedDatesForUnbooking.includes(dateString.value));
 
 const isCurrentDay = computed(() => {
   const now = new Date();
@@ -83,10 +85,6 @@ function hideTooltip() {
 
 <style scoped>
 
-.user-booked {
-  background-color: rgb(51, 168, 194) !important;
-}
-
 .date-container {
   position: relative;
   background-color: white;
@@ -105,6 +103,20 @@ function hideTooltip() {
 .booked {
   color: white;
   background-color: rgb(55, 55, 55);
+}
+
+.date-container.booked.user-booked.selected-for-unbooking,
+.date-container.user-booked.selected-for-unbooking {
+  background-color: rgb(56, 7, 24) ;
+  box-shadow: 5px 5px 5px rgba(34, 34, 34, 0.5);
+}
+
+.selected-for-unbooking .date {
+  font-weight: bold;
+}
+
+.date-container.booked.user-booked {
+  background-color: rgb(51, 168, 194);
 }
 
 .currentDay {
