@@ -65,155 +65,160 @@
     <SelectedDates @booking-complete="handleBookingComplete"/>
 </template>
 
-<script>
-import { ref, computed, watch } from 'vue';
+<script setup>
+import { ref, computed, onMounted, watch } from 'vue';
 import { useFetch } from '#app';
 import SelectedDates from './SelectedDates.vue';
 import MySelectedDates from './MySelectedDates.vue';
+// import Date from './Date.vue';
 
-export default {
-  setup () {
-    const currentDate = new Date();
-    const year = ref(currentDate.getFullYear());
-    const month = ref(currentDate.getMonth());
+// export default {
+  // setup () {
+  const currentDate = new Date();
+  const year = ref(currentDate.getFullYear());
+  const month = ref(currentDate.getMonth());
 
-    const bookings = ref([]);
+  const bookings = ref([]);
 
-    const monthName = computed(() => {
-      const date = new Date(year.value, month.value);
-      return date.toLocaleString('sv-SE', { month: 'long' });
-    });
-
-    function getFirstDayOfMonth(year, month) {
-      return new Date(year, month, 1).getDay();
-    }
-
-    function getDaysInMonth(year, month) {
-      return new Date(year, month + 1, 0).getDate();
-    }
-
-    const bookingsMap = computed(() => {
-      const map = new Map();
-      bookings.value.forEach(booking => {
-        const day = new Date(booking.booking_date).getDate();
-        map.set(day, booking);
-      });
-      return map;
-    });
-
-    const isBooked = computed(() => (day) => bookingsMap.value.has(day));
-
-    const getVisitorsAllowed = computed(() => (day) => {
-      const booking = bookingsMap.value.get(day);
-      return booking ? booking.visitors_allowed : false;
-    });
-
-    async function fetchBookings() {
-      const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
-      bookings.value = data.value || [];
-    }
-
-    watch([year, month], fetchBookings, { immediate: true });
-
-    function handleBookingComplete() {
-      fetchBookings();
-    }
-
-    function getWeekNumber(d) {
-      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-      const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-      return weekNo;
-    }
-
-    const weeks = computed(() => {
-    const daysInMonth = getDaysInMonth(year.value, month.value);
-    const firstDateOfMonth = new Date(year.value, month.value, 1);
-    const lastDateOfMonth = new Date(year.value, month.value, daysInMonth);
-
-    let firstWeek = getWeekNumber(firstDateOfMonth);
-    let lastWeek = getWeekNumber(lastDateOfMonth);
-
-    const weekNumbers = [];
-
-      // Handle year-end cases
-      if (month.value === 11) {
-        for (let week = firstWeek; week <= 52; week++) {
-          weekNumbers.push(week);
-        }
-        if (lastWeek === 1) {
-          weekNumbers.push(1);
-        }
-      } else {
-        for (let week = firstWeek; week <= lastWeek; week++) {
-          weekNumbers.push(week);
-        }
-      }
-
-    return weekNumbers;
+  const monthName = computed(() => {
+  const date = new Date(year.value, month.value);
+    return date.toLocaleString('sv-SE', { month: 'long' });
   });
 
-    const days = computed(() => {
-      const daysInMonth = getDaysInMonth(year.value, month.value);
-      const firstDay = getFirstDayOfMonth(year.value, month.value);
-
-      // Adjust for Monday as the first day of the week
-      const adjustment = firstDay === 0 ? 6 : firstDay - 1;
-
-      // Create array with empty cells for days before the month starts
-      const emptyCells = Array(adjustment).fill(null);
-
-      // Create array with the days of the month
-      const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
-      // Combine empty cells and month days
-      return [...emptyCells, ...monthDays];
-    });
-
-    const nextMonth = () => {
-      if (month.value === 11) {
-        month.value = 0;
-        year.value++;
-      } else {
-        month.value++;
-      }
-      fetchBookings();
-    };
-
-    const previousMonth = () => {
-      if (month.value === 0) {
-        month.value = 11;
-        year.value--;
-      } else {
-        month.value--;
-      }
-      fetchBookings();
-    };
-
-    const getBookingInfo = computed(() => (day) => {
-      const booking = bookingsMap.value.get(day);
-      return booking ? {
-        userName: booking.user_name || 'Anonymous',
-        visitorsAllowed: booking.visitors_allowed
-      } : null;
-    });
-
-    return {
-      year,
-      month,
-      monthName,
-      days,
-      nextMonth,
-      previousMonth,
-      isBooked,
-      getVisitorsAllowed,
-      weeks,
-      handleBookingComplete,
-      getBookingInfo
-    }
+  function getFirstDayOfMonth(year, month) {
+    return new Date(year, month, 1).getDay();
   }
-}
+
+  function getDaysInMonth(year, month) {
+    return new Date(year, month + 1, 0).getDate();
+  }
+
+  const bookingsMap = computed(() => {
+    const map = new Map();
+    bookings.value.forEach(booking => {
+      const day = new Date(booking.booking_date).getDate();
+      map.set(day, booking);
+    });
+    return map;
+  });
+
+  const isBooked = computed(() => (day) => bookingsMap.value.has(day));
+
+  const getVisitorsAllowed = computed(() => (day) => {
+    const booking = bookingsMap.value.get(day);
+    return booking ? booking.visitors_allowed : false;
+  });
+
+  const getBookingInfo = computed(() => (day) => {
+  const booking = bookingsMap.value.get(day);
+    return booking ? {
+      userName: booking.user_name || 'Anonymous',
+      userId: booking.user_id,
+      visitorsAllowed: booking.visitors_allowed
+    } : null;
+  });
+
+  async function fetchBookings() {
+    const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
+    bookings.value = data.value || [];
+  }
+
+  watch([year, month], fetchBookings);
+    // watch([year, month], fetchBookings, { immediate: true }); KANSKE TA TILLBAKA
+
+  onMounted(fetchBookings);
+
+  function handleBookingComplete() {
+    fetchBookings();
+  }
+
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+    return weekNo;
+  }
+
+  const weeks = computed(() => {
+  const daysInMonth = getDaysInMonth(year.value, month.value);
+  const firstDateOfMonth = new Date(year.value, month.value, 1);
+  const lastDateOfMonth = new Date(year.value, month.value, daysInMonth);
+
+  let firstWeek = getWeekNumber(firstDateOfMonth);
+  let lastWeek = getWeekNumber(lastDateOfMonth);
+
+  const weekNumbers = [];
+
+    // Handle year-end cases
+    if (month.value === 11) {
+      for (let week = firstWeek; week <= 52; week++) {
+        weekNumbers.push(week);
+      }
+      if (lastWeek === 1) {
+        weekNumbers.push(1);
+      }
+    } else {
+      for (let week = firstWeek; week <= lastWeek; week++) {
+        weekNumbers.push(week);
+      }
+    }
+
+  return weekNumbers;
+});
+
+  const days = computed(() => {
+    const daysInMonth = getDaysInMonth(year.value, month.value);
+    const firstDay = getFirstDayOfMonth(year.value, month.value);
+
+    // Adjust for Monday as the first day of the week
+    const adjustment = firstDay === 0 ? 6 : firstDay - 1;
+
+    // Create array with empty cells for days before the month starts
+    const emptyCells = Array(adjustment).fill(null);
+
+    // Create array with the days of the month
+    const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+    // Combine empty cells and month days
+    return [...emptyCells, ...monthDays];
+  });
+
+  const nextMonth = () => {
+    if (month.value === 11) {
+      month.value = 0;
+      year.value++;
+    } else {
+      month.value++;
+    }
+    fetchBookings();
+  };
+
+  const previousMonth = () => {
+    if (month.value === 0) {
+      month.value = 11;
+      year.value--;
+    } else {
+      month.value--;
+    }
+    fetchBookings();
+  };
+
+  // return {
+  //   year,
+  //   month,
+  //   monthName,
+  //   days,
+  //   nextMonth,
+  //   previousMonth,
+  //   isBooked,
+  //   getVisitorsAllowed,
+  //   weeks,
+  //   handleBookingComplete,
+  //   getBookingInfo
+  // }
+  // }
+// }
 </script>
 
 <style scoped>

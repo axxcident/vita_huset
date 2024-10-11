@@ -27,7 +27,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
+// import { ref, onMounted, computed } from 'vue';
 import { useDatesStore } from '~/stores/dates';
 import { useUserStore } from '~/stores/user';
 
@@ -46,12 +47,12 @@ const props = defineProps({
 const now = ref(null);
 const showBookingInfo = ref(false);
 
-onMounted(() => {
-  now.value = new Date();
-  setInterval(() => {
-    now.value = new Date();
-  }, 60000);
-});
+// onMounted(() => {
+//   now.value = new Date();
+//   setInterval(() => {
+//     now.value = new Date();
+//   }, 60000);
+// });
 
 const dateString = computed(() => {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
