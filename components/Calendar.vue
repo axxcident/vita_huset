@@ -72,10 +72,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useFetch } from '#app';
 import SelectedDates from './SelectedDates.vue';
 import MySelectedDates from './MySelectedDates.vue';
-// import Date from './Date.vue';
 
-// export default {
-  // setup () {
   const currentDate = new Date();
   const year = ref(currentDate.getFullYear());
   const month = ref(currentDate.getMonth());
@@ -126,7 +123,6 @@ import MySelectedDates from './MySelectedDates.vue';
   }
 
   watch([year, month], fetchBookings);
-    // watch([year, month], fetchBookings, { immediate: true }); KANSKE TA TILLBAKA
 
   onMounted(fetchBookings);
 
@@ -206,21 +202,6 @@ import MySelectedDates from './MySelectedDates.vue';
     fetchBookings();
   };
 
-  // return {
-  //   year,
-  //   month,
-  //   monthName,
-  //   days,
-  //   nextMonth,
-  //   previousMonth,
-  //   isBooked,
-  //   getVisitorsAllowed,
-  //   weeks,
-  //   handleBookingComplete,
-  //   getBookingInfo
-  // }
-  // }
-// }
 </script>
 
 <style scoped>

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (Array.isArray(body.booking_dates) && body.booking_dates.length > 0 && body.user_id) {
-      console.log("Deleting bookings for selected dates")
+      // console.log("Deleting bookings for selected dates")
 
       for (const date of body.booking_dates) {
         await sql`

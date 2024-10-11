@@ -25,7 +25,6 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
-  // DEM GAMLA
   function toggleSelectedDate(date: SelectedDate) {
     if (selectedDates.value.includes(date)) {
       removeSelectedDate(date)
@@ -42,15 +41,6 @@ export const useDatesStore = defineStore('dates', () => {
       selectedDatesForUnbooking.value.push(date)
     }
   }
-
-  // function toggleSelectedDate(date: SelectedDate) { // DEN NYA
-  //   const index = selectedDates.value.indexOf(date)
-  //   if (index > -1) {
-  //     selectedDates.value.splice(index, 1)
-  //   } else {
-  //     selectedDates.value.push(date)
-  //   }
-  // }
 
   function clearSelectedDatesForUnbooking() {
     selectedDatesForUnbooking.value = []

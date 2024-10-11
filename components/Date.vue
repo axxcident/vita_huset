@@ -28,7 +28,6 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-// import { ref, onMounted, computed } from 'vue';
 import { useDatesStore } from '~/stores/dates';
 import { useUserStore } from '~/stores/user';
 
@@ -44,15 +43,7 @@ const props = defineProps({
   bookingInfo: Object
 });
 
-const now = ref(null);
 const showBookingInfo = ref(false);
-
-// onMounted(() => {
-//   now.value = new Date();
-//   setInterval(() => {
-//     now.value = new Date();
-//   }, 60000);
-// });
 
 const dateString = computed(() => {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
@@ -70,16 +61,6 @@ const isCurrentDay = computed(() => {
          props.day === now.getDate();
 });
 
-// function getDateString() {
-//   const monthStr = (props.month + 1).toString().padStart(2, '0');
-//   const dayStr = props.day.toString().padStart(2, '0');
-//   return `${props.year}-${monthStr}-${dayStr}`;
-// }
-
-// const dateString = computed(() => getDateString());
-
-// const isSelected = computed(() => datesStore.selectedDates.includes(dateString.value));
-
 function handleDateClick() {
   if (isUserBooked.value) {
     datesStore.toggleSelectedDateForUnbooking(dateString.value);
@@ -87,10 +68,6 @@ function handleDateClick() {
     datesStore.toggleSelectedDate(dateString.value);
   }
 }
-
-// function toggleDate() {
-//   datesStore.toggleSelectedDate(dateString.value);
-// }
 
 function showTooltip() {
   if (props.isBooked) {
@@ -107,7 +84,7 @@ function hideTooltip() {
 <style scoped>
 
 .user-booked {
-  background-color: #FFD700; /* Gold color for dates booked by the current user */
+  background-color: rgb(51, 168, 194) !important;
 }
 
 .date-container {
@@ -128,7 +105,6 @@ function hideTooltip() {
 .booked {
   color: white;
   background-color: rgb(55, 55, 55);
-  border: 1px solid rgb(255, 11, 11);
 }
 
 .currentDay {
@@ -216,8 +192,8 @@ function hideTooltip() {
 }
 
 .selected {
-  color: white;
-  background-color: rgb(51, 168, 194);
+  color: rgb(255, 215, 0);
+  font-size: 2.2rem;
 }
 
 .tooltip {

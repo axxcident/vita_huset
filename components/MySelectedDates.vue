@@ -1,17 +1,21 @@
 <template>
 	<div v-if="userBookings.length > 0" class="my-selected-dates">
-	  <h3>Mina bokningar för {{ currentMonthName }}</h3>
-	  <ul>
-		<li v-for="date in userBookings" :key="date">
-		  <label>
-			<input type="checkbox" v-model="selectedDatesForUnbooking" :value="date">
-			{{ formatDate(date) }}
-		  </label>
-		</li>
-	  </ul>
-	  <button @click="unbookSelectedDates" :disabled="selectedDatesForUnbooking.length === 0">
-		Avboka
-	  </button>
+		<div class="date-container">
+			<div>
+				<h3>Mina bokningar för {{ currentMonthName }}:</h3>
+				<ul>
+				  <li v-for="date in userBookings" :key="date">
+					<label>
+					  <input type="checkbox" v-model="selectedDatesForUnbooking" :value="date">
+					  {{ formatDate(date) }}
+					</label>
+				  </li>
+				</ul>
+			</div>
+			<button @click="unbookSelectedDates" :disabled="selectedDatesForUnbooking.length === 0">
+			  Avboka
+			</button>
+		</div>
 	</div>
   </template>
 
@@ -83,6 +87,17 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+  }
+
+  .date-container {
+	border: black solid 1px;
+	width: 300px;
+	padding: 1rem;
+	border-radius: 0.5rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
   }
 
   ul {
