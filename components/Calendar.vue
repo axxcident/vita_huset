@@ -56,13 +56,15 @@
       </div>
 
     </section>
-    <MySelectedDates
-      :year="year"
-      :month="month"
-      :bookings="bookings"
-      @bookings-updated="fetchBookings"
-    />
-    <SelectedDates @booking-complete="handleBookingComplete"/>
+    <div class="flex justify-center items-center">
+      <MySelectedDates
+        :year="year"
+        :month="month"
+        :bookings="bookings"
+        @bookings-updated="fetchBookings"
+      />
+      <SelectedDates @booking-complete="handleBookingComplete"/>
+    </div>
 </template>
 
 <script setup>

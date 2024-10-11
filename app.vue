@@ -9,6 +9,8 @@
 
 <style>
   header {
+    position: absolute;
+    width: 100%;
     display: flex;
     justify-content: flex-end;
     padding: 1rem;
