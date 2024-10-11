@@ -1,7 +1,7 @@
 <template>
 	<div class="user-navigation">
 	  <div class="user-display" @click="toggleDropdown">
-		<div class="user-circle" :style="{ backgroundColor: userStore.currentUserColor }"></div>
+		<div class="user-circle" :style="{ backgroundColor: currentUserColor }"></div>
 		<span>{{ userStore.currentUser || 'Välj Användare' }}</span>
 	  </div>
 	  <div v-if="showDropdown" class="user-dropdown">
@@ -16,12 +16,14 @@
   </template>
 
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import { useUserStore } from '~/stores/user';
 
   const userStore = useUserStore();
   const showDropdown = ref(false);
   const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel'];
+
+  const currentUserColor = computed(() => userStore.currentUserColor || '#ccc');
 
   onMounted(() => {
 	userStore.loadUser();

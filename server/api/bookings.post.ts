@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (Array.isArray(body.booking_dates) && body.booking_dates.length > 0) {
-      console.log("Creating multiple bookings for selected dates")
+      // console.log("Creating multiple bookings for selected dates")
 
       for (const date of body.booking_dates) {
         await sql`

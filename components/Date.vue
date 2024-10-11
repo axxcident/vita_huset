@@ -5,7 +5,8 @@
     'booked': isBooked,
     'visitorsAllowed': visitorsAllowed,
     'visitorsNotAllowed': !visitorsAllowed && isBooked,
-    'selected': isSelected
+    'selected': isSelected,
+    'user-booked': isUserBooked
     }"
     @mouseenter="showTooltip"
     @mouseleave="hideTooltip"
@@ -13,8 +14,8 @@
     <button
     class="date"
     :class="{'currentDay': isCurrentDay}"
-    @click="toggleDate"
-    :disabled="isBooked"
+    @click="handleDateClick"
+    :disabled="isBooked && !isUserBooked"
     >
       {{ day }}
     </button>
@@ -26,10 +27,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useDatesStore } from '~/stores/dates';
+import { useUserStore } from '~/stores/user';
 
 const datesStore = useDatesStore();
+const userStore = useUserStore();
 
 const props = defineProps({
   year: Number,
@@ -50,26 +53,43 @@ onMounted(() => {
   }, 60000);
 });
 
-const isCurrentDay = computed(() => {
-  if (!now.value) return false;
-  return props.year === now.value.getFullYear() &&
-         props.month === now.value.getMonth() &&
-         props.day === now.value.getDate();
-});
-
-function getDateString() {
+const dateString = computed(() => {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
   const dayStr = props.day.toString().padStart(2, '0');
   return `${props.year}-${monthStr}-${dayStr}`;
-}
-
-const dateString = computed(() => getDateString());
+});
 
 const isSelected = computed(() => datesStore.selectedDates.includes(dateString.value));
+const isUserBooked = computed(() => props.bookingInfo && props.bookingInfo.userId === userStore.currentUserInfo?.id);
 
-function toggleDate() {
-  datesStore.toggleSelectedDate(dateString.value);
+const isCurrentDay = computed(() => {
+  const now = new Date();
+  return props.year === now.getFullYear() &&
+         props.month === now.getMonth() &&
+         props.day === now.getDate();
+});
+
+// function getDateString() {
+//   const monthStr = (props.month + 1).toString().padStart(2, '0');
+//   const dayStr = props.day.toString().padStart(2, '0');
+//   return `${props.year}-${monthStr}-${dayStr}`;
+// }
+
+// const dateString = computed(() => getDateString());
+
+// const isSelected = computed(() => datesStore.selectedDates.includes(dateString.value));
+
+function handleDateClick() {
+  if (isUserBooked.value) {
+    datesStore.toggleSelectedDateForUnbooking(dateString.value);
+  } else if (!props.isBooked) {
+    datesStore.toggleSelectedDate(dateString.value);
+  }
 }
+
+// function toggleDate() {
+//   datesStore.toggleSelectedDate(dateString.value);
+// }
 
 function showTooltip() {
   if (props.isBooked) {
@@ -84,6 +104,10 @@ function hideTooltip() {
 </script>
 
 <style scoped>
+
+.user-booked {
+  background-color: #FFD700; /* Gold color for dates booked by the current user */
+}
 
 .date-container {
   position: relative;

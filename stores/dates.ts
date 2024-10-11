@@ -6,6 +6,7 @@ type SelectedDates = SelectedDate[]
 // composition type of store
 export const useDatesStore = defineStore('dates', () => {
   const selectedDates: Ref<SelectedDates> = ref([])
+  const selectedDatesForUnbooking = ref<SelectedDates>([])
 
   function addSelectedDate(date: SelectedDate) {
     if (!selectedDates.value.includes(date)) {
@@ -24,6 +25,7 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
+  // DEM GAMLA
   function toggleSelectedDate(date: SelectedDate) {
     if (selectedDates.value.includes(date)) {
       removeSelectedDate(date)
@@ -32,13 +34,56 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
+  function toggleSelectedDateForUnbooking(date: SelectedDate) {
+    const index = selectedDatesForUnbooking.value.indexOf(date)
+    if (index > -1) {
+      selectedDatesForUnbooking.value.splice(index, 1)
+    } else {
+      selectedDatesForUnbooking.value.push(date)
+    }
+  }
+
+  // function toggleSelectedDate(date: SelectedDate) { // DEN NYA
+  //   const index = selectedDates.value.indexOf(date)
+  //   if (index > -1) {
+  //     selectedDates.value.splice(index, 1)
+  //   } else {
+  //     selectedDates.value.push(date)
+  //   }
+  // }
+
+  function clearSelectedDatesForUnbooking() {
+    selectedDatesForUnbooking.value = []
+  }
+
   function clearSelectedDates() {
     selectedDates.value = []
   }
 
+  async function deleteBookings(userId: string) {
+    try {
+      const response = await $fetch('/api/bookings', {
+        method: 'DELETE',
+        body: JSON.stringify({
+          user_id: userId,
+          booking_dates: selectedDatesForUnbooking.value
+        })
+      })
+
+      if (response.status === 200) {
+        clearSelectedDatesForUnbooking()
+        return true
+      } else {
+        throw new Error('Booking deletion failed')
+      }
+    } catch (error) {
+      console.error('Error deleting bookings:', error)
+      return false
+    }
+  }
+
   async function makeBooking() {
     try {
-      // Assuming you're using fetch API, adjust as needed for your setup
       const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
@@ -59,5 +104,5 @@ export const useDatesStore = defineStore('dates', () => {
     }
   }
 
-  return { selectedDates, makeBooking, addSelectedDate, removeSelectedDate, toggleSelectedDate, clearSelectedDates }
+  return { selectedDates, makeBooking, addSelectedDate, removeSelectedDate, toggleSelectedDate, clearSelectedDates, deleteBookings, selectedDatesForUnbooking, toggleSelectedDateForUnbooking, clearSelectedDatesForUnbooking }
 })

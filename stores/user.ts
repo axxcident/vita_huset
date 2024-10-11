@@ -44,6 +44,13 @@ export const useUserStore = defineStore('user', {
         };
       }
       return null;
+    },
+    userColors: (state) => {
+      const colors: Record<UserName, string> = {} as Record<UserName, string>;
+      for (const [name, user] of Object.entries(state.users)) {
+        colors[name as UserName] = user.color;
+      }
+      return colors;
     }
   }
 })

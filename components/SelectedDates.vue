@@ -6,7 +6,7 @@
 				<ul v-if="selectedDates.length > 0">
 				  <li v-for="date in selectedDates" :key="date">{{ formatDate(date) }}</li>
 				</ul>
-				<p v-else>No dates selected</p>
+				<p v-else>Välj ett datum eller fler.</p>
 			</div>
 			<div class="booking-box">
 				<button class="boka-knapp"

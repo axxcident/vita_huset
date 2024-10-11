@@ -56,6 +56,12 @@
       </div>
 
     </section>
+    <MySelectedDates
+      :year="year"
+      :month="month"
+      :bookings="bookings"
+      @bookings-updated="fetchBookings"
+    />
     <SelectedDates @booking-complete="handleBookingComplete"/>
 </template>
 
@@ -63,6 +69,7 @@
 import { ref, computed, watch } from 'vue';
 import { useFetch } from '#app';
 import SelectedDates from './SelectedDates.vue';
+import MySelectedDates from './MySelectedDates.vue';
 
 export default {
   setup () {
