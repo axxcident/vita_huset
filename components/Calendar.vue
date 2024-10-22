@@ -45,9 +45,10 @@
               :year="year"
               :month="month"
               :day="day"
-              :isBooked="isBooked(day)"
+              :isBooked="isDateBooked(day)"
               :visitorsAllowed="getVisitorsAllowed(day)"
               :bookingInfo="getBookingInfo(day)"
+              :key="`${year}-${month}-${day}`"
             />
             <div v-else class="empty-cell"></div>
           </template>
@@ -69,20 +70,26 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { useFetch } from '#app';
+import { $fetch } from 'ofetch';
 import SelectedDates from './SelectedDates.vue';
 import MySelectedDates from './MySelectedDates.vue';
 
   const currentDate = new Date();
   const year = ref(currentDate.getFullYear());
   const month = ref(currentDate.getMonth());
-
   const bookings = ref([]);
+  const isDataLoaded = ref(false);
 
   const monthName = computed(() => {
   const date = new Date(year.value, month.value);
     return date.toLocaleString('sv-SE', { month: 'long' });
   });
+
+  const isDateBooked = (day) => {
+    if (!bookings.value || !Array.isArray(bookings.value)) return false;
+    const dateStr = formatDateString(year.value, month.value, day);
+    return bookings.value.some(booking => booking.booking_date === dateStr);
+  };
 
   function getFirstDayOfMonth(year, month) {
     return new Date(year, month, 1).getDay();
@@ -92,39 +99,60 @@ import MySelectedDates from './MySelectedDates.vue';
     return new Date(year, month + 1, 0).getDate();
   }
 
-  const bookingsMap = computed(() => {
-    const map = new Map();
-    bookings.value.forEach(booking => {
-      const day = new Date(booking.booking_date).getDate();
-      map.set(day, booking);
-    });
-    return map;
-  });
-
-  const isBooked = computed(() => (day) => bookingsMap.value.has(day));
-
-  const getVisitorsAllowed = computed(() => (day) => {
-    const booking = bookingsMap.value.get(day);
+  const getVisitorsAllowed = (day) => {
+    if (!bookings.value || !Array.isArray(bookings.value)) return false;
+    const dateStr = formatDateString(year.value, month.value, day);
+    const booking = bookings.value.find(b => b.booking_date === dateStr);
     return booking ? booking.visitors_allowed : false;
-  });
+  };
 
-  const getBookingInfo = computed(() => (day) => {
-  const booking = bookingsMap.value.get(day);
+  const getBookingInfo = (day) => {
+    if (!bookings.value || !Array.isArray(bookings.value)) return null;
+    const dateStr = formatDateString(year.value, month.value, day);
+    const booking = bookings.value.find(b => b.booking_date === dateStr);
     return booking ? {
       userName: booking.user_name || 'Anonymous',
       userId: booking.user_id,
       visitorsAllowed: booking.visitors_allowed
     } : null;
-  });
+  };
 
-  async function fetchBookings() {
-    const { data } = await useFetch(`/api/bookings?year=${year.value}&month=${month.value}`);
-    bookings.value = data.value || [];
+  function formatDateString(year, month, day) {
+    const monthStr = String(month + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    return `${year}-${monthStr}-${dayStr}`;
   }
 
-  watch([year, month], fetchBookings);
+  async function fetchBookings() {
+    try {
+      // Use $fetch instead of fetch
+      const data = await $fetch('/api/bookings', {
+        method: 'GET',
+        params: {
+          year: year.value,
+          month: month.value
+        }
+      });
 
-  onMounted(fetchBookings);
+      // Ensure data is properly typed
+      if (data && Array.isArray(data)) {
+        bookings.value = data;
+      } else {
+        bookings.value = [];
+        console.warn('Received invalid bookings data format');
+      }
+      isDataLoaded.value = true;
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+      bookings.value = [];
+      isDataLoaded.value = true; // Still set to true so UI can update
+    }
+  }
+
+  watch([year, month], () => {
+    isDataLoaded.value = false;
+    fetchBookings();
+  }, { immediate: true });
 
   function handleBookingComplete() {
     fetchBookings();
@@ -202,6 +230,9 @@ import MySelectedDates from './MySelectedDates.vue';
     fetchBookings();
   };
 
+  onMounted(() => {
+    fetchBookings();
+  });
 </script>
 
 <style scoped>
