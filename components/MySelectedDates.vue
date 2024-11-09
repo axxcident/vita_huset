@@ -1,5 +1,5 @@
 <template>
-	<div v-if="userBookings.length > 0" class="my-selected-dates">
+	<div v-if="userBookings.length > 0" class="my-selected-dates sm:mt-[2rem] mt-0">
 		<div class="date-container">
 			<div>
 				<h3>Mina bokningar för {{ currentMonthName }}:</h3>
@@ -82,7 +82,6 @@
 
   <style scoped>
   .my-selected-dates {
-	margin-top: 2rem;
 	width: 100%;
 	display: flex;
 	flex-direction: column;

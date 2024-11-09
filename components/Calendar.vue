@@ -16,12 +16,12 @@
 
       <div class="sm:ml-4 ml-0 w-min">
         <div class="mt-[5px] sm:mt-[-5px] mb-[10px] sm:w-full">
-          <p class="text-center text-[14px] sm:text-[18px] leading-tight mb-1">Vecko- nummer</p>
+          <p class="text-center text-[10px] sm:text-[18px] leading-tight mb-1">Vecko- nummer</p>
         </div>
 
-        <div class="rounded-lg bg-[rgba(61,61,61,0.1)] sm:w-full">
-          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 sm:gap-[24px] gap-[28px]">
-            <li v-for="week in weeks" :key="week" class="text-center text-2xl sm:text-3xl">{{ week }}</li>
+        <div class="rounded-lg bg-[rgba(61,61,61,0.1)] sm:w-full sm:mt-0 mt-[17px]">
+          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 sm:gap-[24px] gap-[30px] sm:pt-0 pt[10px]">
+            <li v-for="week in weeks" :key="week" class="text-center text-xl sm:text-3xl">{{ week }}</li>
           </ul>
         </div>
       </div>
@@ -56,7 +56,7 @@
       </div>
 
     </section>
-    <div class="flex justify-center items-center">
+    <div class="flex sm:flex-row flex-col justify-center items-center">
       <MySelectedDates
         :year="year"
         :month="month"
@@ -252,7 +252,6 @@ import MySelectedDates from './MySelectedDates.vue';
 }
 
 .month {
-  /* padding: 70px 25px; */
   width: 100%;
   /* background: url('@/assets/vita_hus_WM.jpg') no-repeat center center; */
   /* background-size: cover; */

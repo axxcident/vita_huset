@@ -1,5 +1,5 @@
 <template>
-	<div class="selected-dates">
+	<div class="selected-dates sm:mt-[2rem] mt-0">
 		<div class="date-box">
 			<div class="date-area">
 				<h3>Valda datum:</h3>
@@ -52,7 +52,6 @@
   <style scoped>
 
   .selected-dates {
-	margin-top: 2rem;
 	width: 100%;
 	display: flex;
 	justify-content: center;
