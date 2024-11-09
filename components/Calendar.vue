@@ -1,8 +1,8 @@
 <template>
-  <div class="month">
+  <div class="month py-[40px] sm:py-[70px] px-[25px]">
     <h1 class="text-white tracking-wide p-3 capitalize">vita huset bokningskalender</h1>
     <section>
-        <h4 class="text-[4rem] leading-none capitalize">
+        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
@@ -10,21 +10,20 @@
   </div>
 
   <section class="relative flex w-full">
-      <button id="prev" class="absolute pb-[6px] pr-[4px] left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
-      <button id="next" class="absolute pb-[6px] right-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
+      <button id="prev" class="absolute pb-[6px] pr-[4px] left-[1%] sm:left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
+      <button id="next" class="absolute pb-[6px] sm:right-[25%] right-[1%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
 
-      <div class="ml-4">
-        <div class="mt-[-5px] mb-[10px]">
-          <p class="text-center text-[18px] leading-tight mb-1">Vecko- nummer</p>
+      <div class="sm:ml-4 ml-0 w-min">
+        <div class="mt-[5px] sm:mt-[-5px] mb-[10px] sm:w-full">
+          <p class="text-center text-[14px] sm:text-[18px] leading-tight mb-1">Vecko- nummer</p>
         </div>
 
-        <div class="rounded-lg bg-[rgba(61,61,61,0.1)]">
-          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 gap-[24px]">
-            <li v-for="week in weeks" :key="week" class="text-center text-3xl">{{ week }}</li>
+        <div class="rounded-lg bg-[rgba(61,61,61,0.1)] sm:w-full">
+          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 sm:gap-[24px] gap-[28px]">
+            <li v-for="week in weeks" :key="week" class="text-center text-2xl sm:text-3xl">{{ week }}</li>
           </ul>
         </div>
-
       </div>
 
       <div class="w-full">
@@ -39,7 +38,7 @@
           <span class="text-center">Sö</span>
         </div>
 
-        <div class="days w-[90%] mx-auto grid grid-cols-7 gap-2">
+        <div class="days w-full sm:w-[90%] mx-auto grid grid-cols-7 gap-2">
           <template v-for="(day, index) in days" :key="index">
             <Date v-if="day !== null"
               :year="year"
@@ -134,7 +133,6 @@ import MySelectedDates from './MySelectedDates.vue';
         }
       });
 
-      // Ensure data is properly typed
       if (data && Array.isArray(data)) {
         bookings.value = data;
       } else {
@@ -145,16 +143,10 @@ import MySelectedDates from './MySelectedDates.vue';
     } catch (error) {
       console.error('Error fetching bookings:', error);
       bookings.value = [];
-      isDataLoaded.value = true; // Still set to true so UI can update
+      isDataLoaded.value = true;
     }
   }
 
-  // watch([year, month], () => {
-  //   isDataLoaded.value = false;
-  //   fetchBookings();
-  // }, { immediate: true });
-
-  // Separate watch for year/month changes
   watch([year, month], async () => {
     isDataLoaded.value = false;
     await fetchBookings();
@@ -237,9 +229,6 @@ import MySelectedDates from './MySelectedDates.vue';
     fetchBookings();
   };
 
-  // onMounted(() => {
-  //   fetchBookings();
-  // });
   onMounted(async () => {
     // Small delay to ensure component is fully mounted
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -263,7 +252,7 @@ import MySelectedDates from './MySelectedDates.vue';
 }
 
 .month {
-  padding: 70px 25px;
+  /* padding: 70px 25px; */
   width: 100%;
   /* background: url('@/assets/vita_hus_WM.jpg') no-repeat center center; */
   /* background-size: cover; */
