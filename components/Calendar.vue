@@ -149,10 +149,17 @@ import MySelectedDates from './MySelectedDates.vue';
     }
   }
 
-  watch([year, month], () => {
+  // watch([year, month], () => {
+  //   isDataLoaded.value = false;
+  //   fetchBookings();
+  // }, { immediate: true });
+
+  // Separate watch for year/month changes
+  watch([year, month], async () => {
     isDataLoaded.value = false;
-    fetchBookings();
-  }, { immediate: true });
+    await fetchBookings();
+    isDataLoaded.value = true;
+  });
 
   function handleBookingComplete() {
     fetchBookings();
@@ -230,8 +237,14 @@ import MySelectedDates from './MySelectedDates.vue';
     fetchBookings();
   };
 
-  onMounted(() => {
-    fetchBookings();
+  // onMounted(() => {
+  //   fetchBookings();
+  // });
+  onMounted(async () => {
+    // Small delay to ensure component is fully mounted
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await fetchBookings();
+    isDataLoaded.value = true;
   });
 </script>
 
