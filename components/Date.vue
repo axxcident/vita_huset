@@ -58,9 +58,44 @@ const isSelectedForUnbooking = computed(() => datesStore.selectedDatesForUnbooki
 
 const isCurrentDay = computed(() => {
   const now = new Date();
-  return props.year === now.getFullYear() &&
-         props.month === now.getMonth() &&
-         props.day === now.getDate();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDay = now.getDate();
+
+  return props.year === currentYear &&
+         props.month === currentMonth &&
+         props.day === currentDay;
+});
+
+const refreshCurrentDay = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    refreshCurrentDay.value = !refreshCurrentDay.value;
+  }, 1000);
+});
+
+const hasInteracted = ref(false);
+onMounted(() => {
+  window.addEventListener('mousemove', () => {
+    if (!hasInteracted.value) {
+      hasInteracted.value = true;
+      refreshCurrentDay.value = !refreshCurrentDay.value;
+    }
+  }, { once: true });
+});
+
+watch(refreshCurrentDay, () => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentDay = now.getDate();
+
+  if (props.year === currentYear &&
+      props.month === currentMonth &&
+      props.day === currentDay) {
+    console.log("Today refreshed and found!");
+  }
 });
 
 function handleDateClick() {
