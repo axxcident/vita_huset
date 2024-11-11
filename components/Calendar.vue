@@ -20,7 +20,7 @@
         </div>
 
         <div class="rounded-lg bg-[rgba(61,61,61,0.1)] sm:w-full sm:mt-0 mt-[17px]">
-          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 sm:gap-[24px] gap-[30px] sm:pt-0 pt[10px]">
+          <ul class="w-[100%] mx-auto grid grid-rows-6 grid-cols-1 sm:gap-[24px] gap-[22px] sm:pt-0 pt-[11px] pb-[11px]">
             <li v-for="week in weeks" :key="week" class="text-center text-xl sm:text-3xl">{{ week }}</li>
           </ul>
         </div>
@@ -38,7 +38,7 @@
           <span class="text-center">Sö</span>
         </div>
 
-        <div class="days w-full sm:w-[90%] mx-auto grid grid-cols-7 gap-2">
+        <div class="days w-full sm:w-[90%] mx-auto grid grid-cols-7 gap-0 sm:gap-2">
           <template v-for="(day, index) in days" :key="index">
             <Date v-if="day !== null"
               :year="year"
