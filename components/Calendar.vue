@@ -1,8 +1,8 @@
 <template>
-  <div class="month py-[40px] sm:py-[70px] px-[25px]">
+  <div class="month sm:pb-10 sm:pt-10 pt-0 sm:py-[70px] sm:text-center text-start sm:mb-32 mb-12">
     <h1 class="text-white tracking-wide p-3 capitalize">vita huset bokningskalender</h1>
     <section>
-        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize">
+        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize px-3 text-center">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
@@ -10,8 +10,8 @@
   </div>
 
   <section class="relative flex w-full">
-      <button id="prev" class="absolute pb-[6px] pr-[4px] left-[1%] sm:left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
-      <button id="next" class="absolute pb-[6px] sm:right-[25%] right-[1%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
+      <button id="prev" class="absolute pb-[6px] pr-[4px] left-[10%] lg:left-[25%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="previousMonth">&#10094;</button>
+      <button id="next" class="absolute pb-[6px] lg:right-[25%] right-[10%] top-[-5rem] cursor-pointer text-6xl w-[2.5rem]" @click="nextMonth">&#10095;</button>
 
 
       <div class="sm:ml-4 ml-0 w-min">
@@ -28,7 +28,7 @@
 
       <div class="w-full">
 
-        <div class="weekdays w-[90%] mx-auto mb-4 text-2xl grid grid-cols-7">
+        <div class="weekdays sm:w-[90%] w-[99%] mx-auto mb-4 text-2xl grid grid-cols-7">
           <span class="text-center">Må</span>
           <span class="text-center">Ti</span>
           <span class="text-center">On</span>
@@ -255,9 +255,7 @@ import MySelectedDates from './MySelectedDates.vue';
   width: 100%;
   /* background: url('@/assets/vita_hus_WM.jpg') no-repeat center center; */
   /* background-size: cover; */
-  text-align: center;
   height: 10rem;
-  margin-bottom: 8rem;
 }
 
 .month h1 {
@@ -303,17 +301,4 @@ import MySelectedDates from './MySelectedDates.vue';
   transform: scale(0.95);
 }
 
-/* Flytta dessa MOBILE FIRST till Date.Vue? */
-@media screen and (max-width:720px) {
- .days button {width: 13.1%;}
-}
-
-@media screen and (max-width: 420px) {
-  .weekdays span, .days button {width: 12.5%;}
-  .days li .active {padding: 2px;}
-}
-
-@media screen and (max-width: 290px) {
-  .weekdays span, .days button {width: 12.2%;}
-}
 </style>

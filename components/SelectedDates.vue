@@ -1,5 +1,5 @@
 <template>
-	<div class="selected-dates sm:mt-[2rem] mt-0">
+	<div class="selected-dates sm:mt-[2rem] mt-0 sm:mb-0 mb-8">
 		<div class="date-box">
 			<div class="date-area">
 				<h3>Valda datum:</h3>

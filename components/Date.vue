@@ -149,25 +149,6 @@ function hideTooltip() {
   z-index: 1;
 }
 
-
-/* Media queries for adjusting left property */
-@media (max-width: 1200px) {
-  .currentDay::after {
-    left: -50%;
-  }
-}
- @media (max-width: 992px) {
-  .currentDay::after {
-    left: -40%;
-  }
-}
-
-@media (max-width: 768px) {
-  .currentDay::after {
-    content: none;
-  }
-}
-
 .currentDay::before {
   content: "";
   position: absolute;
@@ -237,6 +218,33 @@ function hideTooltip() {
   z-index: 10;
   white-space: nowrap;
   transition: opacity 1s ease;
+}
+
+
+/* Media queries for adjusting left property */
+@media (max-width: 1200px) {
+  .currentDay::after {
+    left: -50%;
+  }
+}
+ @media (max-width: 992px) {
+  .currentDay::after {
+    left: -40%;
+  }
+}
+
+@media (max-width: 768px) {
+  .currentDay::after {
+    content: none;
+  }
+  .visitorsAllowed::before {
+    width: 8px;
+    height: 8px;
+  }
+  .currentDay::before {
+    left: 6%;
+    top: 73%;
+  }
 }
 
 </style>
