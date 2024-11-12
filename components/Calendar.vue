@@ -311,37 +311,46 @@ import MySelectedDates from './MySelectedDates.vue';
   100% { transform: rotate(360deg); }
 }
 
-#prev {
+#prev, #next {
   border-radius: 28%;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#prev:hover {
-  color: rgb(255, 255, 255);
-  background-color: rgba(52, 52, 52, 0.6);
-  transform: scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+  #prev:hover,
+  #next:hover {
+    color: rgb(255, 255, 255);
+    background-color: rgba(52, 52, 52, 0.6);
+    transform: scale(1.1);
+  }
 }
 
-#prev:active {
-  color: #000;
-  background-color: rgba(255, 255, 255, 0.8);
-  transform: scale(0.95);
-}
-
-#next {
-  border-radius: 28%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-#next:hover {
-  color: rgb(255, 255, 255);
-  background-color: #34343499;
-  transform: scale(1.1);
-}
-
+#prev:active,
 #next:active {
   color: #000;
   background-color: rgba(255, 255, 255, 0.8);
   transform: scale(0.95);
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+@media (hover: none) {
+  #prev:active,
+  #next:active {
+    transition: all 0.1s ease;
+    animation: button-touch 0.3s ease;
+  }
+}
+
+@keyframes button-touch {
+  0% {
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(0.95);
+  }
+  100% {
+    color: initial;
+    background-color: transparent;
+    transform: scale(1);
+  }
 }
 </style>
