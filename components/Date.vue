@@ -56,46 +56,25 @@ const isSelected = computed(() => datesStore.selectedDates.includes(dateString.v
 const isUserBooked = computed(() => props.bookingInfo && props.bookingInfo.userId === userStore.currentUserInfo?.id);
 const isSelectedForUnbooking = computed(() => datesStore.selectedDatesForUnbooking.includes(dateString.value));
 
+const { data: latestDate } = await useFetch('/api/date', {
+  server: true, // Ensures it's run server-side
+});
+
+// Reactive ref for the current day state
 const isCurrentDay = computed(() => {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth();
-  const currentDay = now.getDate();
+  if (!latestDate?.value?.date) return false;
 
-  return props.year === currentYear &&
-         props.month === currentMonth &&
-         props.day === currentDay;
-});
+  // Parse the server-provided date
+  const serverDate = new Date(latestDate.value.date);
+  const currentYear = serverDate.getFullYear();
+  const currentMonth = serverDate.getMonth();
+  const currentDay = serverDate.getDate();
 
-const refreshCurrentDay = ref(false);
-
-onMounted(() => {
-  setTimeout(() => {
-    refreshCurrentDay.value = !refreshCurrentDay.value;
-  }, 1000);
-});
-
-const hasInteracted = ref(false);
-onMounted(() => {
-  window.addEventListener('mousemove', () => {
-    if (!hasInteracted.value) {
-      hasInteracted.value = true;
-      refreshCurrentDay.value = !refreshCurrentDay.value;
-    }
-  }, { once: true });
-});
-
-watch(refreshCurrentDay, () => {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth();
-  const currentDay = now.getDate();
-
-  if (props.year === currentYear &&
-      props.month === currentMonth &&
-      props.day === currentDay) {
-    console.log("Today refreshed and found!");
-  }
+  return (
+    props.year === currentYear &&
+    props.month === currentMonth &&
+    props.day === currentDay
+  );
 });
 
 function handleDateClick() {
