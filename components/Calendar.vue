@@ -47,6 +47,7 @@
               :isBooked="isDateBooked(day)"
               :visitorsAllowed="getVisitorsAllowed(day)"
               :bookingInfo="getBookingInfo(day)"
+              :idag="idag"
               :key="`${year}-${month}-${day}`"
             />
             <div v-else class="empty-cell"></div>
@@ -78,6 +79,20 @@ import MySelectedDates from './MySelectedDates.vue';
   const month = ref(currentDate.getMonth());
   const bookings = ref([]);
   const isDataLoaded = ref(false);
+
+  const { data: serverDate } = await useFetch('/api/date', {
+    server: true,
+  });
+
+  const idag = computed(() => {
+    if (!serverDate.value?.date) return null;
+    const date = new Date(serverDate.value.date);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth(),
+      day: date.getDate()
+    };
+  });
 
   const monthName = computed(() => {
   const date = new Date(year.value, month.value);

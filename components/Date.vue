@@ -7,7 +7,8 @@
     'visitorsNotAllowed': !visitorsAllowed && isBooked,
     'selected': isSelected,
     'user-booked': isUserBooked,
-    'selected-for-unbooking': isSelectedForUnbooking
+    'selected-for-unbooking': isSelectedForUnbooking,
+    'currentDay': isCurrentDay
     }"
     @mouseenter="showTooltip"
     @mouseleave="hideTooltip"
@@ -41,7 +42,11 @@ const props = defineProps({
   day: Number,
   isBooked: Boolean,
   visitorsAllowed: Boolean,
-  bookingInfo: Object
+  bookingInfo: Object,
+  idag: {
+    type: Object,
+    default: () => null
+  },
 });
 
 const showBookingInfo = ref(false);
@@ -56,25 +61,12 @@ const isSelected = computed(() => datesStore.selectedDates.includes(dateString.v
 const isUserBooked = computed(() => props.bookingInfo && props.bookingInfo.userId === userStore.currentUserInfo?.id);
 const isSelectedForUnbooking = computed(() => datesStore.selectedDatesForUnbooking.includes(dateString.value));
 
-const { data: latestDate } = await useFetch('/api/date', {
-  server: true, // Ensures it's run server-side
-});
-
-// Reactive ref for the current day state
 const isCurrentDay = computed(() => {
-  if (!latestDate?.value?.date) return false;
+  if (!props.idag) return false;
 
-  // Parse the server-provided date
-  const serverDate = new Date(latestDate.value.date);
-  const currentYear = serverDate.getFullYear();
-  const currentMonth = serverDate.getMonth();
-  const currentDay = serverDate.getDate();
-
-  return (
-    props.year === currentYear &&
-    props.month === currentMonth &&
-    props.day === currentDay
-  );
+  return props.year === props.idag.year &&
+         props.month === props.idag.month &&
+         props.day === props.idag.day;
 });
 
 function handleDateClick() {
