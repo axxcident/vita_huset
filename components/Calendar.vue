@@ -39,7 +39,10 @@
         </div>
 
         <div class="days w-full sm:w-[90%] mx-auto grid grid-cols-7 gap-0 sm:gap-2">
-          <template v-for="(day, index) in days" :key="index">
+          <div v-if="!isDataLoaded" class="loading-overlay">
+            <div class="loading-spinner"></div>
+          </div>
+          <template v-else v-for="(day, index) in days" :key="index">
             <Date v-if="day !== null"
               :year="year"
               :month="month"
@@ -282,6 +285,32 @@ import MySelectedDates from './MySelectedDates.vue';
      1px  1px 0 #000;
 }
 
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 #prev {
   border-radius: 28%;
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -315,5 +344,4 @@ import MySelectedDates from './MySelectedDates.vue';
   background-color: rgba(255, 255, 255, 0.8);
   transform: scale(0.95);
 }
-
 </style>
