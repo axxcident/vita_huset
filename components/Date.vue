@@ -10,8 +10,9 @@
     'selected-for-unbooking': isSelectedForUnbooking,
     'currentDay': isCurrentDay
     }"
-    @mouseenter="showTooltip"
-    @mouseleave="hideTooltip"
+    @mouseenter="handleTooltipTrigger"
+    @mouseleave="handleTooltipTrigger"
+    @touchstart="handleTooltipTouch"
   >
     <button
     class="date"
@@ -50,6 +51,45 @@ const props = defineProps({
 });
 
 const showBookingInfo = ref(false);
+let touchTimeout = null;
+
+function handleTooltipTrigger(event) {
+  if (window.matchMedia('(hover: hover)').matches) {
+    // Only handle mouse events on devices with hover capability
+    if (props.isBooked) {
+      showBookingInfo.value = event.type === 'mouseenter';
+    }
+  }
+}
+
+function handleTooltipTouch(event) {
+  if (!window.matchMedia('(hover: hover)').matches) {
+    // Only handle touch events on touch devices
+    if (props.isBooked) {
+      if (event.type === 'touchstart') {
+        event.preventDefault(); // Prevent click event from firing
+        showBookingInfo.value = true;
+
+        // Clear any existing timeout
+        if (touchTimeout) {
+          clearTimeout(touchTimeout);
+        }
+      } else if (event.type === 'touchend') {
+        // Set a timeout to hide the tooltip
+        touchTimeout = setTimeout(() => {
+          showBookingInfo.value = false;
+        }, 1500); // Hide after 1.5 seconds
+      }
+    }
+  }
+}
+
+// Clear timeout when component is unmounted
+onUnmounted(() => {
+  if (touchTimeout) {
+    clearTimeout(touchTimeout);
+  }
+});
 
 const dateString = computed(() => {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
@@ -77,15 +117,15 @@ function handleDateClick() {
   }
 }
 
-function showTooltip() {
-  if (props.isBooked) {
-    showBookingInfo.value = true;
-  }
-}
+// function showTooltip() {
+//   if (props.isBooked) {
+//     showBookingInfo.value = true;
+//   }
+// }
 
-function hideTooltip() {
-  showBookingInfo.value = false;
-}
+// function hideTooltip() {
+//   showBookingInfo.value = false;
+// }
 
 </script>
 
@@ -210,8 +250,43 @@ function hideTooltip() {
   z-index: 10;
   white-space: nowrap;
   transition: opacity 1s ease;
+  pointer-events: none;
 }
 
+/* Media query for touch devices */
+@media (hover: none) {
+  .tooltip {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .show-tooltip .tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Adjust tooltip position for better visibility on mobile */
+  @media (max-width: 768px) {
+    .tooltip {
+      top: -120%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 200px;
+      text-align: center;
+    }
+  }
+}
+
+/* Media query for hover devices */
+@media (hover: hover) {
+  .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease;
+  }
+}
 
 /* Media queries for adjusting left property */
 @media (max-width: 1200px) {
