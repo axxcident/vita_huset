@@ -102,7 +102,13 @@ const isUserBooked = computed(() => props.bookingInfo && props.bookingInfo.userI
 const isSelectedForUnbooking = computed(() => datesStore.selectedDatesForUnbooking.includes(dateString.value));
 
 const isCurrentDay = computed(() => {
-  if (!props.idag) return false;
+  if (!props.idag) {
+    console.log('No idag-prop passed to Date component');
+    return false;
+  }
+  else {
+    console.log('idag-prop passed to Date component', props.idag);
+  }
 
   return props.year === props.idag.year &&
          props.month === props.idag.month &&
