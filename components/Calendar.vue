@@ -83,19 +83,48 @@ import MySelectedDates from './MySelectedDates.vue';
   const bookings = ref([]);
   const isDataLoaded = ref(false);
 
-  const { data: serverDate } = await useFetch('/api/date', {
+  // const { data: serverDate } = await useFetch('/api/date', {
+  //   server: true,
+  // });
+  // Use refreshable key for date fetch
+  const { data: serverDate, refresh: refreshDate } = await useFetch('/api/date', {
+    key: 'current-date',
     server: true,
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    },
+    transform: (response) => {
+      // Ensure we're working with a fresh date
+      return { date: new Date().toISOString() };
+    }
+  });
+
+  // Set up periodic refresh
+  let refreshInterval;
+
+  onMounted(() => {
+    // Refresh date every minute
+    refreshInterval = setInterval(() => {
+      refreshDate();
+    }, 60000); // 60000 ms = 1 minute
+  });
+
+  onUnmounted(() => {
+    if (refreshInterval) {
+      clearInterval(refreshInterval);
+    }
   });
 
   const idag = computed(() => {
-    if (!serverDate.value?.date) return null;
-    const date = new Date(serverDate.value.date);
-    return {
-      year: date.getFullYear(),
-      month: date.getMonth(),
-      day: date.getDate()
-    };
-  });
+  if (!serverDate.value?.date) return null;
+  const date = new Date(serverDate.value.date);
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate()
+  };
+});
 
   const monthName = computed(() => {
   const date = new Date(year.value, month.value);
