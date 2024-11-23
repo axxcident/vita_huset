@@ -21,7 +21,7 @@
 
   const userStore = useUserStore();
   const showDropdown = ref(false);
-  const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel'];
+  const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel', 'Torsten', 'Viktor'];
 
   const currentUserColor = computed(() => userStore.currentUserColor || '#ccc');
 

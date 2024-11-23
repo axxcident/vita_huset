@@ -47,7 +47,7 @@
   const isOpen = ref(false);
   const visitorsAllowed = ref(false);
   const isLoading = ref(false);
-  const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel'];
+  const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel', 'Torsten', 'Viktor'];
 
   const emit = defineEmits(['close', 'booking-complete']);
 
