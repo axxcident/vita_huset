@@ -106,8 +106,11 @@ const isCurrentDay = computed(() => {
     console.log('No idag-prop passed to Date component');
     return false;
   }
-  else {
-    console.log('idag-prop passed to Date component', props.idag);
+  else if(props.year === props.idag.year &&
+          props.month === props.idag.month &&
+          props.day === props.idag.day) {
+    console.log('idag-prop passed to Date component and it is', props.idag);
+    return true;
   }
 
   return props.year === props.idag.year &&
