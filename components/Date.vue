@@ -8,21 +8,21 @@
     'selected': isSelected,
     'user-booked': isUserBooked,
     'selected-for-unbooking': isSelectedForUnbooking,
-    'currentDay': isCurrentDay
+    'currentDay': isCurrentDay,
+    'show-tooltip': showBookingInfo
     }"
-    @mouseenter="handleTooltipTrigger"
-    @mouseleave="handleTooltipTrigger"
-    @touchstart="handleTooltipTouch"
+    @mouseenter="handleMouseEvent"
+    @mouseleave="handleMouseEvent"
+    @touchstart="handleTouchEvent"
   >
     <button
     class="date"
-    :class="{'currentDay': isCurrentDay}"
-    @click="handleDateClick"
+    @click.stop.prevent="(e) => handleDateClick(e)"
     :disabled="isBooked && !isUserBooked"
     >
       {{ day }}
     </button>
-    <div v-if="showBookingInfo" class="tooltip">
+    <div v-if="isBooked" class="tooltip">
       <p>Bokad av: {{ bookingInfo.userName }}</p>
       <p>Besökare: {{ visitorsAllowed ? 'Tillåtna' : 'Ej Tillåtna' }}</p>
     </div>
@@ -51,45 +51,88 @@ const props = defineProps({
 });
 
 const showBookingInfo = ref(false);
-let touchTimeout = null;
+const isTouch = ref(false);
+let clickOutsideHandler = null;
 
-function handleTooltipTrigger(event) {
-  if (window.matchMedia('(hover: hover)').matches) {
-    // Only handle mouse events on devices with hover capability
-    if (props.isBooked) {
-      showBookingInfo.value = event.type === 'mouseenter';
-    }
+// handle mouse events (hover)
+function handleMouseEvent(event) {
+  if (!isTouch.value && props.isBooked) {
+    showBookingInfo.value = event.type === 'mouseenter';
   }
 }
 
-function handleTooltipTouch(event) {
-  if (!window.matchMedia('(hover: hover)').matches) {
-    // Only handle touch events on touch devices
-    if (props.isBooked) {
-      if (event.type === 'touchstart') {
-        event.preventDefault(); // Prevent click event from firing
-        showBookingInfo.value = true;
+// handle touch events
+function handleTouchEvent(event) {
+  event.stopPropagation();
+  isTouch.value = true;
 
-        // Clear any existing timeout
-        if (touchTimeout) {
-          clearTimeout(touchTimeout);
-        }
-      } else if (event.type === 'touchend') {
-        // Set a timeout to hide the tooltip
-        touchTimeout = setTimeout(() => {
-          showBookingInfo.value = false;
-        }, 1500); // Hide after 1.5 seconds
+  if (props.isBooked) {
+    event.preventDefault();
+    // Remove any existing click outside handler
+    if (clickOutsideHandler) {
+      document.removeEventListener('touchstart', clickOutsideHandler);
+      document.removeEventListener('click', clickOutsideHandler);
+      clickOutsideHandler = null;
+    }
+
+    // If another tooltip is already visible, close it first
+    const openTooltips = document.querySelectorAll('.show-tooltip');
+    openTooltips.forEach(el => {
+      if (el !== event.currentTarget) {
+        el.classList.remove('show-tooltip');
       }
+    });
+
+    // Toggle tooltip visibility
+    showBookingInfo.value = !showBookingInfo.value;
+    console.log('Tooltip visibility:', showBookingInfo.value); // Add this debug line
+
+    if (showBookingInfo.value) {
+      // Create new click outside handler
+      clickOutsideHandler = (e) => {
+        // Check if click/touch is outside the current date container
+        if (!event.currentTarget.contains(e.target)) {
+          showBookingInfo.value = false;
+          document.removeEventListener('touchstart', clickOutsideHandler);
+          document.removeEventListener('click', clickOutsideHandler);
+          clickOutsideHandler = null;
+        }
+      };
+
+      // Add both touch and click listeners
+      requestAnimationFrame(() => {
+        document.addEventListener('touchstart', clickOutsideHandler);
+        document.addEventListener('click', clickOutsideHandler);
+      });
+    }
+  } else {
+    // For unbooked dates
+    event.preventDefault(); // Prevent default touch behavior
+    const touch = event.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    // Only handle date click if touch is still on the date element
+    if (event.currentTarget.contains(target)) {
+      handleDateClick();
     }
   }
 }
 
-// Clear timeout when component is unmounted
-onUnmounted(() => {
-  if (touchTimeout) {
-    clearTimeout(touchTimeout);
+// Modify handleDateClick to handle touch better
+function handleDateClick(event) {
+  // Prevent any default behavior
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
-});
+
+  if (isUserBooked.value) {
+    datesStore.toggleSelectedDateForUnbooking(dateString.value);
+  } else if (!props.isBooked) {
+    datesStore.toggleSelectedDate(dateString.value);
+  }
+}
+
 
 const dateString = computed(() => {
   const monthStr = (props.month + 1).toString().padStart(2, '0');
@@ -118,28 +161,9 @@ const isCurrentDay = computed(() => {
          props.day === props.idag.day;
 });
 
-function handleDateClick() {
-  if (isUserBooked.value) {
-    datesStore.toggleSelectedDateForUnbooking(dateString.value);
-  } else if (!props.isBooked) {
-    datesStore.toggleSelectedDate(dateString.value);
-  }
-}
-
-// function showTooltip() {
-//   if (props.isBooked) {
-//     showBookingInfo.value = true;
-//   }
-// }
-
-// function hideTooltip() {
-//   showBookingInfo.value = false;
-// }
-
 </script>
 
 <style scoped>
-
 .date-container {
   position: relative;
   background-color: white;
@@ -188,6 +212,7 @@ function handleDateClick() {
   right: 0;
   bottom: 0;
   z-index: 1;
+  pointer-events: none;
 }
 
 .currentDay::before {
@@ -260,20 +285,25 @@ function handleDateClick() {
   white-space: nowrap;
   transition: opacity 1s ease;
   pointer-events: none;
+  opacity: 0;
+}
+
+/* Show tooltip when container has show-tooltip class */
+.show-tooltip .tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Media query for touch devices */
 @media (hover: none) {
   .tooltip {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
-
-  .show-tooltip .tooltip {
-    opacity: 1;
-    visibility: visible;
-  }
+  top: -120%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 200px;
+  text-align: center;
+}
 
   /* Adjust tooltip position for better visibility on mobile */
   @media (max-width: 768px) {
@@ -291,9 +321,13 @@ function handleDateClick() {
 /* Media query for hover devices */
 @media (hover: hover) {
   .tooltip {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .date-container:hover .tooltip {
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.2s ease;
   }
 }
 
@@ -322,5 +356,4 @@ function handleDateClick() {
     top: 73%;
   }
 }
-
 </style>
