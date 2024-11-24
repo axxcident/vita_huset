@@ -95,6 +95,8 @@ import MySelectedDates from './MySelectedDates.vue';
       'Pragma': 'no-cache'
     },
     transform: (response) => {
+      console.log('Refreshing date...');
+      console.log(response.date);
       // Ensure we're working with a fresh date
       return { date: new Date().toISOString() };
     }
@@ -112,6 +114,7 @@ import MySelectedDates from './MySelectedDates.vue';
   onMounted(() => {
     // Run the refreshDate function 1.5 seconds after the component has mounted
     setTimeout(() => {
+      console.log('setTimeout Refreshing date...');
       refreshDate();
     }, 1500); // 1500 ms = 1.5 seconds
   });
