@@ -103,11 +103,17 @@ import MySelectedDates from './MySelectedDates.vue';
   // Set up periodic refresh
   let refreshInterval;
 
+  // onMounted(() => {
+  //   // Refresh date every minute
+  //   refreshInterval = setInterval(() => {
+  //     refreshDate();
+  //   }, 60000); // 60000 ms = 1 minute
+  // });
   onMounted(() => {
-    // Refresh date every minute
-    refreshInterval = setInterval(() => {
+    // Run the refreshDate function 1.5 seconds after the component has mounted
+    setTimeout(() => {
       refreshDate();
-    }, 60000); // 60000 ms = 1 minute
+    }, 1500); // 1500 ms = 1.5 seconds
   });
 
   onUnmounted(() => {
