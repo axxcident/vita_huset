@@ -42,6 +42,7 @@
   <style scoped>
   .user-navigation {
 	position: relative;
+	z-index: 100;
 	display: inline-block;
   }
 

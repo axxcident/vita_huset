@@ -1,8 +1,8 @@
 <template>
   <div class="month sm:pb-10 sm:pt-10 pt-0 sm:py-[70px] sm:text-center text-start sm:mb-32 mb-12">
-    <h1 class="text-white tracking-wide p-3 capitalize">vita huset bokningskalender</h1>
+    <h1 class="text-white tracking-wide p-3 capitalize relative z-10">vita huset bokningskalender</h1>
     <section>
-        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize px-3 text-center">
+        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize px-3 text-center relative z-10">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
@@ -308,11 +308,52 @@ import MySelectedDates from './MySelectedDates.vue';
 }
 
 .month {
+  position: relative;
   width: 100%;
-  /* background: url('@/assets/vita_hus_WM.jpg') no-repeat center center; */
-  /* background-size: cover; */
   height: 10rem;
+  color: rgb(55, 54, 52);
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
+
+.month::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 52%;
+  transform: translate(-50%, -50%);
+  width: 77%;
+  height: 250%;
+  /* background-image: url("/assets/vita_hus_WM.jpg"); */
+  background: url("@/assets/vita_hus_WM.jpg") no-repeat center 15%;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: 0;
+  border-radius: 5px;
+}
+
+@media (max-width: 1024px) {
+  .month::after {
+    width: 67%;
+    left: 50%;
+  }
+}
+
+@media (max-width: 773px) {
+  .month::after {
+    content: none;
+  }
+}
+
+/* @media (max-width: 485px) {
+  .month::after {
+    content: '';
+    left: 0%;
+    top: 30%;
+    width: 145%;
+    height: 110%;
+  }
+} */
 
 .month h1 {
   font-size: 2.5em;
@@ -352,6 +393,12 @@ import MySelectedDates from './MySelectedDates.vue';
 #prev, #next {
   border-radius: 28%;
   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+  #prev, #next {
+    color: white;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
