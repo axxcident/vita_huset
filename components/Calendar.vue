@@ -1,8 +1,8 @@
 <template>
   <div class="month sm:pb-10 sm:pt-10 pt-0 sm:py-[70px] sm:text-center text-start sm:mb-32 mb-12">
     <h1 class="text-white tracking-wide p-3 capitalize relative z-10">vita huset bokningskalender</h1>
-    <section>
-        <h4 class="sm:text-[4rem] text-[1.8rem] leading-none capitalize px-3 text-center relative z-10">
+    <section class="flex justify-center md:block">
+        <h4 class="sm:text-[4rem] sm:my-0 sm:mx-auto text-[1.8rem] leading-none capitalize px-3 relative z-10">
           {{ monthName }}
           <span class="text-[1.2rem]">{{ year }}</span>
         </h4>
