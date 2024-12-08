@@ -1,4 +1,5 @@
 <template>
+	<Login ref="loginRef" @login-success="handleLoginSuccess" />
 	<div v-if="isOpen" class="overlay">
 	  <div class="overlay-content">
 		<h2>Bekräfta Bokning</h2>
@@ -11,7 +12,7 @@
 			</div>
 			<div class="user-selection">
 				<h3>Välj Användare:</h3>
-				<select v-model="selectedUser" @change="userStore.setUser(selectedUser)">
+				<select v-model="selectedUser">
 					<option value="">Välj Användare</option>
 					<option v-for="user in availableUsers" :key="user" :value="user">{{ user }}</option>
 				</select>
@@ -22,7 +23,7 @@
 			  </label>
 			</div>
 			<div class="actions">
-			  <button @click="confirmBooking" class="confirm-btn" :disabled="!userStore.isUserSelected">Bekräfta Bokning</button>
+			  <button @click="confirmBooking" class="confirm-btn" :disabled="!selectedUserTemp && !userStore.currentUser">Bekräfta Bokning</button>
 			  <button @click="closeOverlay" class="cancel-btn">Avbryt</button>
 			</div>
 		</div>
@@ -39,7 +40,9 @@
   import { useDatesStore } from '~/stores/dates';
   import { useUserStore } from '~/stores/user';
   import { storeToRefs } from 'pinia';
+  import Login from './Login.vue';
 
+  const loginRef = ref(null);
   const userStore = useUserStore();
   const datesStore = useDatesStore();
   const { selectedDates } = storeToRefs(datesStore);
@@ -51,10 +54,16 @@
 
   const emit = defineEmits(['close', 'booking-complete']);
 
-  const selectedUser = computed({
-	get: () => userStore.currentUser || '',
-	set: (value) => userStore.setUser(value || null)
-  });
+  	const selectedUserTemp = ref('');
+
+	const selectedUser = computed({
+		get: () => {
+			return selectedUserTemp.value || userStore.currentUser || '';
+		},
+		set: (value) => {
+			selectedUserTemp.value = value || '';
+		}
+	});
 
   function formatDate(dateString) {
 	const [year, month, day] = dateString.split('-');
@@ -67,42 +76,74 @@
 
   function closeOverlay() {
 	isOpen.value = false;
+	selectedUserTemp.value = '';
 	emit('close');
   }
 
   async function confirmBooking() {
-	if (!userStore.isUserSelected) return;
+	const storedAuth = localStorage.getItem('bookingAuth');
 
-	const currentUserInfo = userStore.currentUserInfo;
-	if (!currentUserInfo) return;
+	if (!storedAuth) {
+		loginRef.value.openLoginOverlay();
+		return;
+	}
 
-	isLoading.value = true;
 	try {
-	  const response = await $fetch('/api/bookings', {
-		method: 'POST',
-		body: JSON.stringify({
-		  user_id: currentUserInfo.id,
-		  user_name: currentUserInfo.name,
-		  booking_dates: selectedDates.value,
-		  visitors_allowed: visitorsAllowed.value
-		})
-	  });
+		const response = await $fetch('/api/login', {
+		method: 'GET',
+		params: { password: storedAuth }
+		});
 
-	  if (response.status === 201) {
-		datesStore.clearSelectedDates();
-		emit('booking-complete');
-		await new Promise(resolve => setTimeout(resolve, 2000));
-		closeOverlay();
-	  } else {
-		throw new Error('Booking failed');
-	  }
+		if (!response.success) {
+			localStorage.removeItem('bookingAuth');
+			loginRef.value.openLoginOverlay();
+			return;
+		}
+
+		if (selectedUserTemp.value) {
+			userStore.setUser(selectedUserTemp.value);
+		}
+
+		if (!userStore.isUserSelected) return;
+
+		const currentUserInfo = userStore.currentUserInfo;
+		if (!currentUserInfo) return;
+
+		isLoading.value = true;
+		try {
+			const response = await $fetch('/api/bookings', {
+				method: 'POST',
+				body: JSON.stringify({
+				user_id: currentUserInfo.id,
+				user_name: currentUserInfo.name,
+				booking_dates: selectedDates.value,
+				visitors_allowed: visitorsAllowed.value
+				})
+			});
+
+			if (response.status === 201) {
+				datesStore.clearSelectedDates();
+				selectedUserTemp.value = '';
+				emit('booking-complete');
+				await new Promise(resolve => setTimeout(resolve, 2000));
+				closeOverlay();
+			} else {
+				throw new Error('Booking failed');
+			}
+		} catch (error) {
+			console.error('Error during booking:', error);
+			alert('An error occurred while booking. Please try again.');
+		} finally {
+			isLoading.value = false;
+		}
 	} catch (error) {
-	  console.error('Error during booking:', error);
-	  alert('An error occurred while booking. Please try again.');
-	} finally {
-    isLoading.value = false;
-  	}
-  }
+		console.error('Error verifying auth:', error);
+	}
+}
+
+	function handleLoginSuccess() {
+	confirmBooking();
+	}
 
   defineExpose({ openOverlay });
   </script>
@@ -151,7 +192,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 1000;
+	z-index: 100;
   }
 
   .overlay-content {
@@ -160,6 +201,7 @@
 	border-radius: 0.5rem;
 	max-width: 500px;
 	width: 90%;
+	z-index: 101;
   }
 
   .selected-dates ul {
@@ -187,6 +229,11 @@
   .confirm-btn {
 	background-color: rgb(56, 194, 51);
 	color: white;
+  }
+
+  .confirm-btn:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
   }
 
   .cancel-btn {

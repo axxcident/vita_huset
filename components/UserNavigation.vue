@@ -1,4 +1,5 @@
 <template>
+	<Login ref="loginRef" @login-success="handleLoginSuccess" />
 	<div class="user-navigation">
 	  <div class="user-display" @click="toggleDropdown">
 		<div class="user-circle" :style="{ backgroundColor: currentUserColor }"></div>
@@ -18,10 +19,14 @@
   <script setup>
   import { ref, computed, onMounted } from 'vue';
   import { useUserStore } from '~/stores/user';
+  import Login from './Login.vue';
 
+  const loginRef = ref(null);
   const userStore = useUserStore();
   const showDropdown = ref(false);
+  const pendingUserSelection = ref(null);
   const availableUsers = ['Charlotta', 'Zarah', 'Vendela', 'Axel', 'Torsten', 'Viktor'];
+  const pendingSelection = ref(null);
 
   const currentUserColor = computed(() => userStore.currentUserColor || '#ccc');
 
@@ -33,10 +38,44 @@
 	showDropdown.value = !showDropdown.value;
   }
 
-  function selectUser(user) {
-	userStore.setUser(user);
-	showDropdown.value = false;
-  }
+  async function selectUser(user) {
+	pendingUserSelection.value = user;
+	const storedAuth = localStorage.getItem('bookingAuth');
+	pendingSelection.value = user;
+
+	if (!storedAuth) {
+		loginRef.value.openLoginOverlay();
+		return;
+	}
+
+	try {
+		const response = await $fetch('/api/login', {
+		method: 'GET',
+		params: { password: storedAuth }
+		});
+
+		if (response.success) {
+			completeUserSelection();
+		} else {
+		localStorage.removeItem('bookingAuth');
+		loginRef.value.openLoginOverlay();
+		}
+	} catch (error) {
+		console.error('Error verifying auth:', error);
+	}
+	}
+
+	function completeUserSelection() {
+		if (pendingUserSelection.value) {
+			userStore.setUser(pendingUserSelection.value);
+			showDropdown.value = false;
+			pendingUserSelection.value = null;
+		}
+	}
+
+	function handleLoginSuccess() {
+		completeUserSelection();
+	}
   </script>
 
   <style scoped>
