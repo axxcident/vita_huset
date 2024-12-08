@@ -3,6 +3,14 @@ import { resolve } from 'path';
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  app: {
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
+  },
+
   routeRules: {
     // prerender index route by default
     '/': { prerender: true },
